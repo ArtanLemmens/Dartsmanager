@@ -1,0 +1,40 @@
+﻿<Window x:Class="Dartsmanager.Views.Windows.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Dartsmanager.Views.Windows"
+        mc:Ignorable="d"
+                Title="Login" Height="350" Width="300" WindowStartupLocation="CenterScreen">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto "/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Login" Style="{StaticResource TextBlock_H1}" HorizontalAlignment="Center"/>
+        <TextBlock Grid.Row="1" Text="Username" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
+        <TextBox Grid.Row="2" x:Name="TB_Username" Style="{StaticResource TextBox_Info}" />
+        <TextBlock Grid.Row="3"  Text="Wachtwoord " Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
+        <PasswordBox Grid.Row="4" x:Name="TB_Wachtwoord" Style="{StaticResource PasswordBox_P1}" />
+        <Button Grid.Row="5" x:Name="BT_Login" Content="Login" Click="BT_Login_Click" 
+            Style="{StaticResource Button_B2}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,20,5,5"/>
+        <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button x:Name="BT_Registreer" Content="Registreer" Click="BT_Registreer_Click"  
+                    Style="{StaticResource Button_B3}" />
+            <Button x:Name="BT_Cancel" Content="Cancel" Click="BT_Cancel_Click" 
+                    Style="{StaticResource Button_B3}" Foreground="Red"/>
+        </StackPanel>
+    </Grid>
+</Window>

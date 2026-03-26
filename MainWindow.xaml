@@ -5,8 +5,126 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dartsmanager"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Dartsmanager" Height="650" Width="1050" WindowState="Maximized" >
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- TOGELKNOP-->
+        <StackPanel Grid.Row="0" Grid.Column="0"  Background="#1F2937"  >
+            <ToggleButton x:Name="Toggle_Menu" Style="{StaticResource TB_PijlLR}" IsChecked="True"/>
+        </StackPanel>
+
+        <!-- TITEL-->
+        <StackPanel Grid.Row="0" Grid.Column="1"   >
+            <TextBlock x:Name="TB_Clubnaam" Text="Darts Manager" Style="{StaticResource TextBlock_H1}" />
+        </StackPanel>
+
+        <!-- LOGIN-->
+        <StackPanel Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" >
+            <Button x:Name="BT_Login" Content="LOGIN" Click="BT_Login_Click"  Style="{StaticResource Button_B1}" HorizontalAlignment="Right"/>
+        </StackPanel>
+        <!-- REGISTREER-->
+        <StackPanel Grid.Row="0" Grid.Column="2" >
+            <Button x:Name="BT_Registreer" Content="REGISTREER" Click="BT_Registreer_Click" Style="{StaticResource Button_B1}" Background="Orange"/>
+        </StackPanel>
+
+        <!-- MENU-->
+        <Menu Grid.Row="1" Grid.Column="0"
+              Foreground="White" Background="#1F2937" FontWeight="Medium"
+              HorizontalAlignment="Left"
+              Padding="5" MaxWidth="160">
+            <Menu.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Vertical"/>
+                </ItemsPanelTemplate>
+            </Menu.ItemsPanel>
+            <Menu.ItemContainerStyle >
+                <Style TargetType="MenuItem">
+                    <Setter Property="Padding" Value="2,2,2,8"/>
+                    <Setter Property="Margin" Value="0"/>
+                    <Setter Property="FontSize" Value="16"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Cursor" Value="Hand"/>
+                            <Setter Property="FontSize" Value="18"/>
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter Property="Foreground" Value="CadetBlue"/>
+                            <Setter Property="FontSize" Value="18"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Menu.ItemContainerStyle>
+
+            <MenuItem x:Name="BT_Home" Click="BT_Home_Click">
+                <MenuItem.Header >
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Images/home.png" Width="30"/>
+                        <TextBlock x:Name="TB_Home" Text="Home" Padding="5,0,25,0" VerticalAlignment="Center" 
+                                   Visibility="{Binding IsChecked, ElementName=Toggle_Menu, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                    </StackPanel>
+                </MenuItem.Header>
+            </MenuItem>
+            <MenuItem x:Name="BT_Profiel" Click="BT_Profiel_Click">
+                <MenuItem.Header >
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Images/profile.png" Width="30" />
+                        <TextBlock x:Name="TB_Profiel" Text="Profiel" Padding="5,0,25,0" VerticalAlignment="Center"
+                                   Visibility="{Binding IsChecked, ElementName=Toggle_Menu, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                    </StackPanel>
+                </MenuItem.Header>
+            </MenuItem>
+            <MenuItem x:Name="BT_Speler" Click="BT_Speler_Click">
+                <MenuItem.Header >
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Images/speler.png" Width="30" />
+                        <TextBlock x:Name="TB_Spelers" Text="Spelers" Padding="5,0,25,0" VerticalAlignment="Center"
+                                   Visibility="{Binding IsChecked, ElementName=Toggle_Menu, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                    </StackPanel>
+                </MenuItem.Header>
+            </MenuItem>
+            <MenuItem x:Name="BT_Tornooi" Click="BT_Tornooi_Click">
+                <MenuItem.Header >
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Images/tornooi.png" Width="30" />
+                        <TextBlock x:Name="TB_Tornooien" Text="Tornooien" Padding="5,0,25,0" VerticalAlignment="Center"
+                                   Visibility="{Binding IsChecked, ElementName=Toggle_Menu, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                    </StackPanel>
+                </MenuItem.Header>
+            </MenuItem>
+            <MenuItem x:Name="BT_Wedstrijd" Click="BT_Wedstrijd_Click">
+                <MenuItem.Header >
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Images/game.png" Width="30" />
+                        <TextBlock x:Name="TB_Wedstrijden" Text="Wedstrijden" Padding="5,0,25,0" VerticalAlignment="Center"
+                                   Visibility="{Binding IsChecked, ElementName=Toggle_Menu, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                    </StackPanel>
+                </MenuItem.Header>
+            </MenuItem>
+            <MenuItem x:Name="BT_Statistiek" Click="BT_Statistiek_Click">
+                <MenuItem.Header >
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Images/stats.png" Width="30" />
+                        <TextBlock x:Name="TB_Statistiek" Text="Statistieken" Padding="5,0,25,0" VerticalAlignment="Center"
+                                   Visibility="{Binding IsChecked, ElementName=Toggle_Menu, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                    </StackPanel>
+                </MenuItem.Header>
+            </MenuItem>
+        </Menu>
+
+        <!-- PAGFEFRAME -->
+        <Frame Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" 
+               VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+               Name="Frame_Pagina" NavigationUIVisibility="Hidden"
+               Background="AliceBlue" BorderBrush="#1F2937" BorderThickness="0,1,0,0"/>
 
     </Grid>
 </Window>
