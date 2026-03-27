@@ -73,7 +73,6 @@ namespace Dartsmanager.Services
                     if (bestaandeGebruiker != null)
                     {
                         db.Users.Remove(bestaandeGebruiker);
-
                         db.SaveChanges();
                     }
                 }
