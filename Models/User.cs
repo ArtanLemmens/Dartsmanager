@@ -11,7 +11,7 @@ public partial class User
 
     public string WachtwoordHash { get; set; } = null!;
 
-    public int? IsAdmin { get; set; }
+    public bool IsAdmin { get; set; }
 
     public int? PlayerId { get; set; }
 

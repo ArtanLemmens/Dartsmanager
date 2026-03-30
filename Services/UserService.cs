@@ -33,6 +33,67 @@ namespace Dartsmanager.Services
                 return gebruiker;
             }
         }
+        public static bool CheckExistingName(string naam)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                bool bestaande_naam = false;
+                var gebruiker = db.Users.FirstOrDefault(u => u.Username == naam);
+                if (gebruiker != null)
+                {
+                    bestaande_naam = true;
+                }
+                return bestaande_naam;
+            }
+        }
+        public static bool CheckExistingName(string naam, int id)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                bool bestaande_naam = false;
+                var gebruiker = db.Users.FirstOrDefault(u => u.Username == naam && u.Id != id);
+                if (gebruiker != null)
+                {
+                    bestaande_naam = true;
+                }
+                return bestaande_naam;
+            }
+        }
+        public static bool CheckExistingPlayerLink(Player speler)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                bool bestaande_link = false;
+                var gebruiker = db.Users.FirstOrDefault(u => u.PlayerId == speler.Id);
+                if (gebruiker != null)
+                {
+                    bestaande_link = true;
+                }
+                return bestaande_link;
+            }
+        }
+        public static bool CheckExistingPlayerLink(Player speler, int id)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                bool bestaande_link = false;
+                var gebruiker = db.Users.FirstOrDefault(u => u.PlayerId == speler.Id && u.Id != id);
+                if (gebruiker != null)
+                {
+                    bestaande_link = true;
+                }
+                return bestaande_link;
+            }
+        }
+
+        public static int CountAdmins()
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                int aantal_admins = db.Users.Count(u => u.IsAdmin);
+                return aantal_admins;
+            }
+        }
         public static void Update(User gebruiker)
         {
             try

@@ -28,7 +28,7 @@
 
   <ItemGroup>
     <None Update="Data\DB_Dartsmanager.db">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Dartsmanager.Models;
+using Dartsmanager.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Dartsmanager.Data;
