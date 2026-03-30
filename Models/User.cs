@@ -9,7 +9,7 @@ public partial class User
 
     public string Username { get; set; } = null!;
 
-    public byte[] WachtwoordHash { get; set; } = null!;
+    public string WachtwoordHash { get; set; } = null!;
 
     public int? IsAdmin { get; set; }
 

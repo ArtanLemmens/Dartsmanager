@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Windows;
 using Dartsmanager.Views.Windows;
+using Dartsmanager.Models;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -17,6 +18,8 @@ namespace Dartsmanager
     /// </summary>
     public partial class MainWindow : Window
     {
+        private User? _UserLoggedIn = null;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -24,10 +27,7 @@ namespace Dartsmanager
 
         private void BT_Home_Click(object sender, RoutedEventArgs e)
         {
-            //if (_LoggedIn == true)
-            //{
-            //    frame.Navigate(new AdminPage(_dbPath)); // Admin waarde meegeven
-            //}
+            
         }
 
         private void BT_Profiel_Click(object sender, RoutedEventArgs e)
@@ -60,17 +60,20 @@ namespace Dartsmanager
             // Toon loginscherm 
             var LoginScherm = new LoginWindow();
             LoginScherm.ShowDialog();
-            //_UserLoggedIn = LoginScherm.UserLoggedIn
-            //if (_UserLoggedIn != null)
-            //{
-            //    BT_Login.Content = _UserLoggedIn.Username;
-            //}
+            _UserLoggedIn = LoginScherm.UserLoggedIn;
+            // Knopcontent wijzigen naar de username
+            if (_UserLoggedIn != null)
+            {
+                BT_Login.Content = _UserLoggedIn.Username;
+            }
         }
 
         private void BT_Registreer_Click(object sender, RoutedEventArgs e)
         {
             var RegistreerScherm = new UserWindow();
             RegistreerScherm.ShowDialog();
+            // Loginscherm tonen met geregistreerde username
+
         }
     }
 }

@@ -25,6 +25,14 @@ namespace Dartsmanager.Services
                 return gebruiker;
             }
         }
+        public static User? GetUserFromName(string naam)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                var gebruiker = db.Users.FirstOrDefault(u => u.Username == naam);
+                return gebruiker;
+            }
+        }
         public static void Update(User gebruiker)
         {
             try
