@@ -52,9 +52,9 @@ namespace Dartsmanager.Views.Windows
                 {
                     MessageBox.Show("Deze speler is al gelinkt aan een andere gebruiker!\nNeem contact op met onze admins indien u dit wilt laten wijzigen."); return;
                 }
-                nieuwe_gebruiker.PlayerId = speler.Id;
-                nieuwe_gebruiker.PlayerIdBevestigd = false;
+                nieuwe_gebruiker.PlayerId = speler.Id;                
             }
+            nieuwe_gebruiker.PlayerIdBevestigd = false;
 
             // Kijken of er admins bestaan en anders voorstellen om een admin aan te maken
             nieuwe_gebruiker.IsAdmin = false;
