@@ -55,7 +55,7 @@ namespace Dartsmanager.Views.Windows
 
         private void BT_Registreer_Click(object sender, RoutedEventArgs e)
         {
-            var RegistreerScherm = new UserWindow(UserLoggedIn);
+            var RegistreerScherm = new UserWindow();
             RegistreerScherm.ShowDialog();
             // Loginscherm tonen met geregistreerde username
 

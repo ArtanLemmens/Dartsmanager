@@ -13,7 +13,7 @@
             <RowDefinition Height="40"/>
             <RowDefinition Height="20"/>
             <RowDefinition Height="40"/>
-            <RowDefinition Height="20"/>
+            <RowDefinition Height="25"/>
             <RowDefinition Height="40"/>
             <RowDefinition Height="60"/>
             <RowDefinition Height="35"/>
@@ -30,19 +30,20 @@
         <TextBox Grid.Row="2" x:Name="TB_Username" Style="{StaticResource TextBox_Info}" />
         <TextBlock Grid.Row="3"  Text="Wachtwoord" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
         <PasswordBox Grid.Row="4" x:Name="TB_Wachtwoord" Style="{StaticResource PasswordBox_P1}" />
-        <TextBlock Grid.Row="5"  Text="Speler" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
+        <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Left">
+            <TextBlock Grid.Row="5"  Text="Speler" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0" />
+            <Button x:Name="BT_Create_Player" Content="Creëer" Click="BT_Create_Player_Click" Style="{StaticResource Button_B3}" Margin="5,5,5,0"/>
+        </StackPanel>
+        
         <ComboBox Grid.Row="6" x:Name="CB_Spelers" 
                   Style="{StaticResource ComboBox_C1}"  ItemsSource="{Binding Spelers}"
                   DisplayMemberPath="Voornaam" SelectedValuePath="Id"/>
 
         <Button Grid.Row="7" x:Name="BT_Create" Content="Creëer" Click="BT_Create_Click" 
             Style="{StaticResource Button_B2}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,20,5,5"/>
-        <StackPanel Grid.Row="8" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button x:Name="BT_Update" Content="Update" Click="BT_Update_Click"  
-                    Style="{StaticResource Button_B3}" />
-            <Button x:Name="BT_Cancel" Content="Cancel" Click="BT_Cancel_Click" 
-                    Style="{StaticResource Button_B3}" Foreground="Red"/>
-        </StackPanel>
+        <Button Grid.Row="8" x:Name="BT_Cancel" Content="Cancel" Click="BT_Cancel_Click" 
+        Style="{StaticResource Button_B3}" Foreground="Red"/>
+        
     </Grid>
 </Window>
 

@@ -14,7 +14,6 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
         <!-- TOGELKNOP-->
@@ -24,15 +23,13 @@
 
         <!-- TITEL-->
         <StackPanel Grid.Row="0" Grid.Column="1"   >
-            <TextBlock x:Name="TB_Clubnaam" Text="Darts Manager" Style="{StaticResource TextBlock_H1}" />
+            <TextBlock x:Name="TB_Programmanaam" Text="Manager" Style="{StaticResource TextBlock_H1}" />
         </StackPanel>
 
         <!-- LOGIN-->
-        <StackPanel Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" >
-            <Button x:Name="BT_Login" Content="LOGIN" Click="BT_Login_Click"  Style="{StaticResource Button_B1}" HorizontalAlignment="Right"/>
-        </StackPanel>
-        <!-- REGISTREER-->
-        <StackPanel Grid.Row="0" Grid.Column="2" >
+        <StackPanel Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal">
+            <TextBlock x:Name="TB_Username" Style="{StaticResource TextBlock_H2}" />
+            <Button x:Name="BT_Login" Content="LOGIN" Click="BT_Login_Click"  Style="{StaticResource Button_B1}"/>
             <Button x:Name="BT_Registreer" Content="REGISTREER" Click="BT_Registreer_Click" Style="{StaticResource Button_B1}" Background="Orange"/>
         </StackPanel>
 
