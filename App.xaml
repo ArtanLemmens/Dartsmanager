@@ -45,6 +45,13 @@
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
 
+        <!-- Datepicker Stijlen -->
+        <Style x:Key="DatePicker_D1" TargetType="DatePicker">
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
         <!-- Password Stijlen -->
         <Style x:Key="PasswordBox_P1" TargetType="PasswordBox">
             <Setter Property="Foreground" Value="Black"/>

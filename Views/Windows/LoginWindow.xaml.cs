@@ -26,6 +26,7 @@ namespace Dartsmanager.Views.Windows
         public LoginWindow()
         {
             InitializeComponent();
+            TB_Username.Focus();
         }
 
         private void BT_Login_Click(object sender, RoutedEventArgs e)

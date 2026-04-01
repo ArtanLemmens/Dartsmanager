@@ -23,6 +23,7 @@ namespace Dartsmanager.Views.Windows
         public UserWindow()
         {
             InitializeComponent();
+            TB_Username.Focus();
         }
         private void BT_Create_Click(object sender, RoutedEventArgs e)
         {
@@ -77,7 +78,9 @@ namespace Dartsmanager.Views.Windows
 
         private void BT_Create_Player_Click(object sender, RoutedEventArgs e)
         {
-
+            // Toon spelerscherm 
+            var SpelerScherm = new PlayerWindow();
+            SpelerScherm.ShowDialog();
         }
 
         private void BT_Cancel_Click(object sender, RoutedEventArgs e)

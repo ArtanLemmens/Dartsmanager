@@ -21,6 +21,61 @@ namespace Dartsmanager.Services
                 return spelers;
             }
         }
+        public static Player? GetPlayerFromId(int id)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                var speler = db.Players.FirstOrDefault(p => p.Id == id);
+                return speler;
+            }
+        }
+        public static Player? GetPlayerFromName(string naam, string voornaam)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                var speler = db.Players.FirstOrDefault(p => p.Naam == naam && p.Voornaam == voornaam);
+                return speler;
+            }
+        }
+        public static bool CheckExistingName(string naam, string voornaam)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                bool bestaande_naam = false;
+                var speler = db.Players.FirstOrDefault(p => p.Naam == naam && p.Voornaam == voornaam);
+                if (speler != null)
+                {
+                    bestaande_naam = true;
+                }
+                return bestaande_naam;
+            }
+        }
+        public static bool CheckExistingName(string naam, string voornaam, int id)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                bool bestaande_naam = false;
+                var speler = db.Players.FirstOrDefault(p => p.Naam == naam && p.Voornaam == voornaam && p.Id != id);
+                if (speler != null)
+                {
+                    bestaande_naam = true;
+                }
+                return bestaande_naam;
+            }
+        }
+        public static bool CheckExistingUserLink(User gebruiker)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                bool bestaande_link = false;
+                var gevonden_gebruiker = db.Users.FirstOrDefault(u => u.Id == gebruiker.Id);
+                if (gebruiker != null && gebruiker.PlayerId != null)
+                {
+                    bestaande_link = true;
+                }
+                return bestaande_link;
+            }
+        }
         public static void Update(Player speler)
         {
             try

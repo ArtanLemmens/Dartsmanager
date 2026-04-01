@@ -25,6 +25,7 @@ namespace Dartsmanager.Views.Windows
         {
             InitializeComponent();
             _gebruiker = gebruiker;
+            TB_Wachtwoord.Focus();
         }
 
         private void BT_OK_Click(object sender, RoutedEventArgs e)

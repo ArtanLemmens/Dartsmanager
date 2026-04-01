@@ -30,6 +30,12 @@ namespace Dartsmanager.Views.Pages
             _actieve_gebruiker = actieve_gebruiker;
             SetActiveUserValues();
             LoadPlayerData();
+            BindData();
+        }
+        private void BindData()
+        {
+            List<Player> spelers = PlayerService.GetAll();
+            CB_Spelers.ItemsSource = spelers;
         }
 
         private void SetActiveUserValues()
@@ -111,20 +117,20 @@ namespace Dartsmanager.Views.Pages
             }
         }
 
-        private void CB_Spelers_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void BT_Update_Player_Click(object sender, RoutedEventArgs e)
         {
             if (_actieve_gebruiker == null)
             {
                 MessageBox.Show("Er is geen gebruiker ingelogd om up te daten"); return;
-            }
-            // Wachtwoord vragen om te bevestigen
-            var WachtwoordScherm = new PasswordWindow(_actieve_gebruiker);
-            WachtwoordScherm.ShowDialog();
-            // Als het wachtwoord correct is, wijziging doorvoeren
-            if (WachtwoordScherm._CorrectWachtwoord == true)
+            }            
+            // Speler ophalen uit combobox indien er 1 is geselcteerd
+            if (CB_Spelers.SelectedItem is Player speler)
             {
-                // Speler ophalen uit combobox indien er 1 is geselcteerd
-                if (CB_Spelers.SelectedItem is Player speler)
+                // Wachtwoord vragen om te bevestigen
+                var WachtwoordScherm = new PasswordWindow(_actieve_gebruiker);
+                WachtwoordScherm.ShowDialog();
+                // Als het wachtwoord correct is, wijziging doorvoeren
+                if (WachtwoordScherm._CorrectWachtwoord == true)
                 {
                     if (UserService.CheckExistingPlayerLink(speler, _actieve_gebruiker.Id) == true)
                     {
@@ -132,17 +138,20 @@ namespace Dartsmanager.Views.Pages
                     }
                     _actieve_gebruiker.PlayerId = speler.Id;
                     _actieve_gebruiker.PlayerIdBevestigd = false;
+                    // Aanpassen in de database
+                    UserService.Update(_actieve_gebruiker);
+                    MessageBox.Show($"Uw aanvraag tot spelerskoppeling werd ingediend bij onze admins.");
+                    // Spelerdata laden
+                    LoadPlayerData();
                 }
-                // Aanpassen in de database
-                UserService.Update(_actieve_gebruiker);
-                MessageBox.Show($"Uw aanvraag tot spelerskoppeling werd ingediend bij onze admins.");
-                LoadPlayerData();
             }
         }
 
         private void BT_Create_Player_Click(object sender, RoutedEventArgs e)
         {
-            
+            // Toon spelerscherm 
+            var SpelerScherm = new PlayerWindow();
+            SpelerScherm.ShowDialog();
         }
 
         private void BT_Player_Data_Click(object sender, RoutedEventArgs e)
@@ -164,5 +173,8 @@ namespace Dartsmanager.Views.Pages
         {
 
         }
+
+
+        
     }
 }
