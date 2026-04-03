@@ -1,0 +1,80 @@
+﻿<Page x:Class="Dartsmanager.Views.Pages.PlayerOverview"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Dartsmanager.Views.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="1000"
+      Title="PlayerOverview">
+    <Page.Resources>
+        <DataTemplate x:Key="Template_Spelers">
+            <Grid Margin="0" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="80" />
+                    <ColumnDefinition Width="100" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Style="{StaticResource TextBlock_LB}" Text="{Binding VoornaamNaam}" Grid.Column="0"/>
+                <TextBlock Style="{StaticResource TextBlock_LB}" Text="{Binding Geboortedatum}" Grid.Column="1"/>
+                <TextBlock Style="{StaticResource TextBlock_LB}" Text="{Binding Mail}" Grid.Column="2"/>
+                <TextBlock Style="{StaticResource TextBlock_LB}" Text="{Binding Telefoonnummer}" Grid.Column="3"/>                
+                <TextBlock Style="{StaticResource TextBlock_LB}" Text="{Binding Ranking}" Grid.Column="4"/>
+                <TextBlock Style="{StaticResource TextBlock_LB}" Text="{Binding LidSinds}" Grid.Column="5"/>
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- TITEL -->
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Spelers" Style="{StaticResource TextBlock_H2}" />
+        
+        <!-- ZOEKBOX -->
+        <Border Grid.Row="1" Grid.Column="0" CornerRadius="10" BorderBrush="Black" BorderThickness="1" Background="#2B2B2B" Margin="5" MinWidth="200" >
+            <TextBox x:Name="TB_Speler" Style="{StaticResource TextBox_Search}" Text="Zoek speler..." GotFocus="TB_Speler_GotFocus" LostFocus="TB_Speler_LostFocus" TextChanged="TB_Speler_TextChanged"/>
+        </Border>
+        <Button Grid.Row="1" Grid.Column="1" x:Name="BT_Create_Player" Content="Nieuwe speler" Click="BT_Create_Player_Click" Style="{StaticResource Button_B3}" HorizontalAlignment="Left"/>
+
+        <!-- HEADER -->
+        <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"  BorderBrush="Black" BorderThickness="0,0,0,1" Background="#2B2B2B" Margin="5,5,5,0" HorizontalAlignment="Left">
+            <Grid  Margin="5,5,7,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="80" />
+                    <ColumnDefinition Width="100" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Naam" Style="{StaticResource TextBlock_LB_Titel}" Grid.Column="0"/>
+                <TextBlock Text="Geboortedatum" Style="{StaticResource TextBlock_LB_Titel}" Grid.Column="1"/>
+                <TextBlock Text="Mail" Style="{StaticResource TextBlock_LB_Titel}" Grid.Column="2"/>
+                <TextBlock Text="Telefoon" Style="{StaticResource TextBlock_LB_Titel}" Grid.Column="3"/>
+                <TextBlock Text="Ranking" Style="{StaticResource TextBlock_LB_Titel}" Grid.Column="4"/>
+                <TextBlock Text="Lid sinds" Style="{StaticResource TextBlock_LB_Titel}" Grid.Column="5"/>
+            </Grid>
+        </Border>
+        
+
+        <!-- LISTBOX -->
+        <ListBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" x:Name="LB_Spelers"  
+                 BorderBrush="DarkGray" Style="{StaticResource ListBox_L1}" ItemTemplate="{StaticResource Template_Spelers}" d:ItemsSource="{d:SampleData ItemCount=2}"/>
+
+
+    </Grid>
+</Page>

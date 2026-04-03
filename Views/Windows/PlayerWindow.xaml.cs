@@ -30,6 +30,7 @@ namespace Dartsmanager.Views.Windows
         private void BindData()
         {
             List<User> gebruikers = UserService.GetAll();
+            gebruikers.Insert(0, new User { Id = 0, Username = "-- Selecteer gebruiker --" });
             CB_Users.ItemsSource = gebruikers;
         }
 
@@ -71,9 +72,7 @@ namespace Dartsmanager.Views.Windows
                 Geboortedatum = geboortedatum,
                 Mail = mail,
                 Telefoonnummer = telefoonnummer
-            };
-            // Speler toevoegen
-            PlayerService.Add(nieuwe_speler);            
+            };                    
 
             // User ophalen uit combobox indien er 1 is geselecteerd
             if (CB_Users.SelectedItem is User gebruiker)
@@ -83,6 +82,9 @@ namespace Dartsmanager.Views.Windows
                 {
                     MessageBox.Show("Deze gebruiker is al gelinkt aan een andere speler!\nNeem contact op met onze admins indien u dit wilt laten wijzigen."); return;
                 }
+                // Speler toevoegen
+                PlayerService.Add(nieuwe_speler);
+                //Gebruiker koppelen
                 var gebruiker_te_koppelen = UserService.GetUserFromId(gebruiker.Id);
                 if (gebruiker_te_koppelen != null)
                 {
@@ -97,6 +99,11 @@ namespace Dartsmanager.Views.Windows
                     }
                     
                 }
+            }
+            else
+            {
+                // Speler toevoegen
+                PlayerService.Add(nieuwe_speler);
             }
             Close();
         }

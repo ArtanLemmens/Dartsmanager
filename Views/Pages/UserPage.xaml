@@ -55,7 +55,7 @@
 
                 <TextBlock Grid.Row="3" Grid.Column="0" Text="Speler" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
                 <ComboBox Grid.Row="3" Grid.Column="1" x:Name="CB_Spelers" Style="{StaticResource ComboBox_C1}"
-                          DisplayMemberPath="Voornaam" SelectedValuePath="Id"/>
+                          DisplayMemberPath="VoornaamNaam" SelectedValuePath="Id"/>
                 <Button Grid.Row="3" Grid.Column="2" x:Name="BT_Update_Player" Content="Update speler" Click="BT_Update_Player_Click" Style="{StaticResource Button_B3}"/>
                 <Button Grid.Row="3" Grid.Column="3" x:Name="BT_Create_Player" Content="Nieuwe speler" Click="BT_Create_Player_Click" Style="{StaticResource Button_B3}"/>
 

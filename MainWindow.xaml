@@ -115,13 +115,22 @@
                     </StackPanel>
                 </MenuItem.Header>
             </MenuItem>
+            <MenuItem x:Name="BT_Admin" Click="BT_Admin_Click">
+                <MenuItem.Header >
+                    <StackPanel Orientation="Horizontal">
+                        <Image  Width="30" />
+                        <TextBlock x:Name="TB_Admin" Text="Admin" Padding="5,0,25,0" VerticalAlignment="Center"
+                                   Visibility="{Binding IsChecked, ElementName=Toggle_Menu, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                    </StackPanel>
+                </MenuItem.Header>
+            </MenuItem>
         </Menu>
 
         <!-- PAGFEFRAME -->
         <Frame Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" 
                VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                Name="Frame_Pagina" NavigationUIVisibility="Hidden"
-               Background="AliceBlue" BorderBrush="#1F2937" BorderThickness="0,1,0,0"/>
+               Background="AliceBlue" BorderBrush="#1F2937" BorderThickness="0,1,0,0" Padding="10"/>
 
     </Grid>
 </Window>

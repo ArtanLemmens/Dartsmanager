@@ -37,7 +37,7 @@
         
         <ComboBox Grid.Row="6" x:Name="CB_Spelers" 
                   Style="{StaticResource ComboBox_C1}"  ItemsSource="{Binding Spelers}"
-                  DisplayMemberPath="Voornaam" SelectedValuePath="Id"/>
+                  DisplayMemberPath="VoornaamNaam" SelectedValuePath="Id"/>
 
         <Button Grid.Row="7" x:Name="BT_Create" Content="Creëer" Click="BT_Create_Click" 
             Style="{StaticResource Button_B2}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,20,5,5"/>

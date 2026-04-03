@@ -40,4 +40,12 @@ public partial class Player
     public virtual ICollection<Registration> Registrations { get; set; } = new List<Registration>();
 
     public virtual User? User { get; set; }
+
+    public string VoornaamNaam
+    {
+        get
+        {
+            return $"{Voornaam} {Naam}";
+        }
+    }
 }

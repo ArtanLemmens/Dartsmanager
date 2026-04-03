@@ -37,6 +37,13 @@ namespace Dartsmanager.Services
                 return speler;
             }
         }
+        public static List<Player> GetPlayersFromNameFilter(string filter)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                return db.Players.Where(p => p.Voornaam.Contains(filter) || p.Naam.Contains(filter)).ToList();
+            }
+        }
         public static bool CheckExistingName(string naam, string voornaam)
         {
             using (var db = new DbDartsmanagerContext())
@@ -109,6 +116,7 @@ namespace Dartsmanager.Services
             {
                 using (var db = new DbDartsmanagerContext())
                 {
+                    speler.LidSinds = DateTime.Now.ToString("dd/MM/yyyy");
                     db.Players.Add(speler);
                     db.SaveChanges();
                 }

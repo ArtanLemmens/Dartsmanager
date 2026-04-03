@@ -29,6 +29,22 @@
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
+        <Style x:Key="TextBlock_LB" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="TextBlock_LB_Titel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
         <Style x:Key="TextBlock_p" TargetType="TextBlock">
             <Setter Property="Foreground" Value="Black"/>
             <Setter Property="Margin" Value="5"/>
@@ -43,6 +59,14 @@
             <Setter Property="Foreground" Value="Black"/>
             <Setter Property="Margin" Value="5"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="TextBox_Search" TargetType="TextBox">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="5"/>
         </Style>
 
         <!-- Datepicker Stijlen -->
@@ -136,6 +160,24 @@
             <Style.Triggers>
                 <Trigger Property="IsChecked" Value="True">
                     <Setter Property="Content" Value="◀" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- ListBox Stijlen -->
+        <Style x:Key="ListBox_L1" TargetType="ListBox">            
+            <Setter Property="MinHeight" Value="10"/>
+            <Setter Property="MaxHeight" Value="200"/>
+            <Setter Property="Margin" Value="5,0,5,5"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Background" Value="#2B2B2B"/>
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="Visibility" Value="Visible" />
+            <Style.Triggers>
+                <Trigger Property="HasItems" Value="False">
+                    <Setter Property="Visibility" Value="Collapsed" />
                 </Trigger>
             </Style.Triggers>
         </Style>
