@@ -32,6 +32,13 @@ namespace Dartsmanager.Views.Pages
             _actieve_speler = speler;
             _frame = frame;
             LoadPlayerData();
+            BindData();
+        }
+        private void BindData()
+        {
+            List<Adress> adressen = AdressService.GetAll();
+            adressen.Add(new Adress { Id = 0, Straat = "-- Selecteer adres --" });
+            CB_Adresses.ItemsSource = adressen;
         }
 
         private void LoadPlayerData()
@@ -48,8 +55,17 @@ namespace Dartsmanager.Views.Pages
                     TB_Geboortedatum.Text = _actieve_speler.Geboortedatum;
                     TB_Mail.Text = _actieve_speler.Mail;
                     TB_Telefoonnummer.Text = _actieve_speler.Telefoonnummer;
-                    TB_Adres.Text = _actieve_speler.AdresVolledig;
-                }                
+                    CB_Adresses.SelectedValue = _actieve_speler.AdresId;
+                    BT_Create_Adress.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    TB_Geboortedatum.Visibility = Visibility.Collapsed;
+                    TB_Mail.Visibility = Visibility.Collapsed;
+                    TB_Telefoonnummer.Visibility = Visibility.Collapsed;
+                    CB_Adresses.Visibility = Visibility.Collapsed;
+                    BT_Create_Adress.Visibility = Visibility.Collapsed;
+                }
             }
         }
 
@@ -67,6 +83,10 @@ namespace Dartsmanager.Views.Pages
                 _actieve_speler.Geboortedatum = TB_Geboortedatum.Text;
                 _actieve_speler.Mail = TB_Mail.Text;
                 _actieve_speler.Telefoonnummer = TB_Telefoonnummer.Text;
+                if (CB_Adresses.SelectedItem is Adress adres)
+                {
+                    _actieve_speler.AdresId = AdressService.GetIdFromFullAdress(adres.Straat, adres.Huisnummer, adres.Toevoeging, adres.Postcode, adres.Gemeente, adres.CountryId);
+                }
                 PlayerService.Update(_actieve_speler);
                 MessageBox.Show("De spelersgegevens zijn aangepast");
             }
@@ -74,6 +94,13 @@ namespace Dartsmanager.Views.Pages
             {
                 MessageBox.Show("U heeft geen rechten om deze spelersgegevens te wijzigen");
             }
+        }        
+
+        private void BT_Create_Adress_Click(object sender, RoutedEventArgs e)
+        {
+            var AdresScherm = new AdressWindow();
+            AdresScherm.ShowDialog();
+            BindData();
         }
     }
 }

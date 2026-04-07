@@ -18,6 +18,30 @@ namespace Dartsmanager.Services
                 return landen;
             }
         }
+        public static Country? GetCountryByName(string naam)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                var land = db.Countries.FirstOrDefault(c => c.Naam == naam);
+                return land;
+            }
+        }
+
+        public static bool CheckExistingCountry(string naam, string afkorting)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                bool bestaand_land = false;
+                var land = db.Countries.FirstOrDefault(c => c.Naam == naam || c.Afkorting == afkorting);
+                if (land != null)
+                {
+                    bestaand_land = true;
+                }
+                return bestaand_land;
+            }
+        }
+
+
         public static void UpdateCountry(Country land)
         {
             try
@@ -80,6 +104,42 @@ namespace Dartsmanager.Services
             {
                 var adressen = db.Adresses.Include(a => a.Country).ToList();
                 return adressen;
+            }
+        }
+        public static bool CheckExistingAdres(string straat, int huisnummer, string toevoeging, string postcode, string gemeente, int? countryId)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                bool bestaand_adres = false;
+                var adres = db.Adresses.FirstOrDefault(a => a.Straat == straat
+                && a.Huisnummer == huisnummer
+                && a.Toevoeging == toevoeging
+                && a.Postcode == postcode
+                && a.Gemeente == gemeente
+                && a.CountryId == countryId);
+                if (adres != null)
+                {
+                    bestaand_adres = true;
+                }
+                return bestaand_adres;
+            }
+        }
+        public static int? GetIdFromFullAdress(string straat, int huisnummer, string? toevoeging, string? postcode, string? gemeente, int? countryId)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+
+                var adres = db.Adresses.FirstOrDefault(a => a.Straat == straat
+                && a.Huisnummer == huisnummer
+                && a.Toevoeging == toevoeging
+                && a.Postcode == postcode
+                && a.Gemeente == gemeente
+                && a.CountryId == countryId);
+                if (adres != null)
+                {
+                    return adres.Id;
+                }
+                return null;
             }
         }
         public static void Update(Adress adres)

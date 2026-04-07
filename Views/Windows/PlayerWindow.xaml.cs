@@ -29,14 +29,27 @@ namespace Dartsmanager.Views.Windows
 
         private void BindData()
         {
+            List<Adress> adressen = AdressService.GetAll();
+            adressen.Add( new Adress { Id = 0, Straat = "-- Selecteer adres --" });
+            CB_Adresses.ItemsSource = adressen;
+
             List<User> gebruikers = UserService.GetAll();
-            gebruikers.Insert(0, new User { Id = 0, Username = "-- Selecteer gebruiker --" });
+            gebruikers.Add(new User { Id = 0, Username = "-- Selecteer gebruiker --" });
             CB_Users.ItemsSource = gebruikers;
+        }
+
+        private void BT_Create_Adress_Click(object sender, RoutedEventArgs e)
+        {
+            var AdresScherm = new AdressWindow();
+            AdresScherm.ShowDialog();
+            BindData();
         }
 
         private void BT_Create_User_Click(object sender, RoutedEventArgs e)
         {
-
+            var RegistreerScherm = new UserWindow();
+            RegistreerScherm.ShowDialog();
+            BindData();
         }
 
 
@@ -112,5 +125,7 @@ namespace Dartsmanager.Views.Windows
         {
             Close();
         }
+
+        
     }
 }

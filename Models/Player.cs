@@ -53,15 +53,11 @@ public partial class Player
     {
         get
         {
-            if (Adres == null)
+            if (Adres != null)
             {
-                return "";
+                return Adres.AdresVolledig;
             }
-            if (Adres.Country == null)
-            {
-                return $"{Adres.Gemeente} {Adres.Huisnummer}{Adres.Toevoeging}, {Adres.Postcode} {Adres.Gemeente}";
-            }
-            return $"{Adres.Gemeente} {Adres.Huisnummer}{Adres.Toevoeging}, {Adres.Postcode} {Adres.Gemeente}, {Adres.Country.Naam}";
+            return "";
         }
     }
 }

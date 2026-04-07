@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dartsmanager.Views.Windows"
         mc:Ignorable="d"
-        Title="Spelerscherm" Height="600" Width="300" WindowStartupLocation="CenterScreen">
+        Title="Spelerscherm" Height="700" Width="300" WindowStartupLocation="CenterScreen">
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto "/>
@@ -18,6 +18,8 @@
             <RowDefinition Height="20"/>
             <RowDefinition Height="40"/>
             <RowDefinition Height="20"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="25"/>
             <RowDefinition Height="40"/>
             <RowDefinition Height="25"/>
             <RowDefinition Height="40"/>
@@ -47,16 +49,23 @@
         <TextBox Grid.Row="10" x:Name="TB_Telefoonnummer" Style="{StaticResource TextBox_Info}" />
 
         <StackPanel Grid.Row="11" Orientation="Horizontal" HorizontalAlignment="Left">
-            <TextBlock Grid.Row="11"  Text="User" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0" />
+            <TextBlock Text="Adres" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0" />
+            <Button x:Name="BT_Create_Adress" Content="Creëer" Click="BT_Create_Adress_Click" Style="{StaticResource Button_B3}" Margin="5,5,5,0"/>
+        </StackPanel>
+
+        <ComboBox Grid.Row="12" x:Name="CB_Adresses" Style="{StaticResource ComboBox_C1}" DisplayMemberPath="AdresVolledig" SelectedValuePath="Id"/>
+        
+        <StackPanel Grid.Row="13" Orientation="Horizontal" HorizontalAlignment="Left">
+            <TextBlock  Text="User" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0" />
             <Button x:Name="BT_Create_User" Content="Creëer" Click="BT_Create_User_Click" Style="{StaticResource Button_B3}" Margin="5,5,5,0"/>
         </StackPanel>
 
-        <ComboBox Grid.Row="12" x:Name="CB_Users" Style="{StaticResource ComboBox_C1}" DisplayMemberPath="Username" SelectedValuePath="Id"/>
+        <ComboBox Grid.Row="14" x:Name="CB_Users" Style="{StaticResource ComboBox_C1}" DisplayMemberPath="Username" SelectedValuePath="Id"/>
 
-        <Button Grid.Row="13" x:Name="BT_Create" Content="Creëer" Click="BT_Create_Click" 
+        <Button Grid.Row="15" x:Name="BT_Create" Content="Creëer" Click="BT_Create_Click" 
             Style="{StaticResource Button_B2}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,20,5,5"/>
         
-        <Button Grid.Row="14" x:Name="BT_Cancel" Content="Cancel" Click="BT_Cancel_Click" 
+        <Button Grid.Row="16" x:Name="BT_Cancel" Content="Cancel" Click="BT_Cancel_Click" 
             Style="{StaticResource Button_B3}" Foreground="Red"/>
 
     </Grid>
