@@ -48,4 +48,20 @@ public partial class Player
             return $"{Voornaam} {Naam}";
         }
     }
+
+    public string AdresVolledig
+    {
+        get
+        {
+            if (Adres == null)
+            {
+                return "";
+            }
+            if (Adres.Country == null)
+            {
+                return $"{Adres.Gemeente} {Adres.Huisnummer}{Adres.Toevoeging}, {Adres.Postcode} {Adres.Gemeente}";
+            }
+            return $"{Adres.Gemeente} {Adres.Huisnummer}{Adres.Toevoeging}, {Adres.Postcode} {Adres.Gemeente}, {Adres.Country.Naam}";
+        }
+    }
 }

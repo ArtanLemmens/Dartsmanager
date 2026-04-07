@@ -88,7 +88,7 @@ namespace Dartsmanager
 
         private void BT_Speler_Click(object sender, RoutedEventArgs e)
         {
-            Frame_Pagina.Navigate(new PlayerOverview(_actieve_gebruiker));
+            Frame_Pagina.Navigate(new PlayerOverview(_actieve_gebruiker, Frame_Pagina));
         }
 
         private void BT_Tornooi_Click(object sender, RoutedEventArgs e)

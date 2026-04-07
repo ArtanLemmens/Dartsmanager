@@ -29,7 +29,7 @@ namespace Dartsmanager.Views.Pages
 
         private void BT_Players_Click(object sender, RoutedEventArgs e)
         {
-            Frame_Admin.Navigate(new PlayerOverview(_actieve_gebruiker));
+            Frame_Admin.Navigate(new PlayerOverview(_actieve_gebruiker, Frame_Admin));
         }
 
         private void BT_Tournaments_Click(object sender, RoutedEventArgs e)

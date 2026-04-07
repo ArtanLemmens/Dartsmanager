@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows;
 
 namespace Dartsmanager.Services
 {
@@ -136,6 +137,19 @@ namespace Dartsmanager.Services
                     if (bestaandeSpeler != null)
                     {
                         db.Players.Remove(bestaandeSpeler);
+                        var bestaandeUser = db.Users.FirstOrDefault(u => u.PlayerId == speler.Id);
+                        if (bestaandeUser  != null)
+                        {
+                            MessageBoxResult result = MessageBox.Show($"Deze speler komt nog voor in user:\n{bestaandeUser.Username}.\nBent u echt zeker dat u wilt verwijderen?",
+                                                  "Bevestig verwijdering",
+                                                  MessageBoxButton.YesNo,
+                                                  MessageBoxImage.Question);
+                            if (result == MessageBoxResult.Yes)
+                            {
+                                bestaandeUser.PlayerId = null;
+                                UserService.Update(bestaandeUser);
+                            }
+                        }
                         db.SaveChanges();
                     }
                 }

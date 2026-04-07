@@ -22,11 +22,13 @@ namespace Dartsmanager.Views.Pages
     public partial class PlayerOverview : Page
     {
         private User? _actieve_gebruiker = null;
+        private Frame _frame;
 
-        public PlayerOverview(User? actieve_gebruiker)
+        public PlayerOverview(User? actieve_gebruiker, Frame frame)
         {
             InitializeComponent();
             _actieve_gebruiker = actieve_gebruiker;
+            _frame = frame;
             GetPlayers();
         }
 
@@ -87,6 +89,48 @@ namespace Dartsmanager.Views.Pages
             // Toon spelerscherm 
             var SpelerScherm = new PlayerWindow();
             SpelerScherm.ShowDialog();
+            FilterPlayers();
+        }
+
+        private void BT_View_Player_Click(object sender, RoutedEventArgs e)
+        {
+            if(LB_Spelers.SelectedItem is Player speler)
+            {
+                _frame.Navigate(new PlayerPage(_actieve_gebruiker,speler,_frame));
+            }
+            else
+            {
+                MessageBox.Show("Gelieve eerst een speler te selecteren");
+            }
+        }
+
+        private void BT_Remove_Player_Click(object sender, RoutedEventArgs e)
+        {
+            
+            if (LB_Spelers.SelectedItem is Player speler)
+            {
+                if (_actieve_gebruiker == null)
+                {
+                    MessageBox.Show("Login in om de speler te kunnen verwijderen");
+                }
+                // Enkel verwijderen toelaten als de speler bij de actieve gebruiker hoort of als hij een admin is
+                else if (_actieve_gebruiker.IsAdmin == true || (_actieve_gebruiker.PlayerId == speler.Id && _actieve_gebruiker.PlayerIdBevestigd == true))
+                {
+                    MessageBoxResult result = MessageBox.Show($"Bent u zeker dat u deze speler wenst te verwijderen:\n{speler.VoornaamNaam}?",
+                                                  "Bevestig verwijdering",
+                                                  MessageBoxButton.YesNo,
+                                                  MessageBoxImage.Question);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        PlayerService.Remove(speler);
+                        FilterPlayers();
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Gelieve eerst een speler te selecteren");
+            }
         }
 
         

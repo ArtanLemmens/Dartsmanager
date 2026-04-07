@@ -167,7 +167,7 @@
         <!-- ListBox Stijlen -->
         <Style x:Key="ListBox_L1" TargetType="ListBox">            
             <Setter Property="MinHeight" Value="10"/>
-            <Setter Property="MaxHeight" Value="200"/>
+            <Setter Property="MaxHeight" Value="300"/>
             <Setter Property="Margin" Value="5,0,5,5"/>
             <Setter Property="Padding" Value="0"/>
             <Setter Property="Background" Value="#2B2B2B"/>
