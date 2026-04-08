@@ -136,7 +136,7 @@ namespace Dartsmanager.Services
                     var bestaandeSpeler = db.Players.FirstOrDefault(p => p.Id == speler.Id);
                     if (bestaandeSpeler != null)
                     {
-                        db.Players.Remove(bestaandeSpeler);
+                        
                         var bestaandeUser = db.Users.FirstOrDefault(u => u.PlayerId == speler.Id);
                         if (bestaandeUser  != null)
                         {
@@ -149,7 +149,12 @@ namespace Dartsmanager.Services
                                 bestaandeUser.PlayerId = null;
                                 UserService.Update(bestaandeUser);
                             }
+                            else
+                            {
+                                return;
+                            }
                         }
+                        db.Players.Remove(bestaandeSpeler);
                         db.SaveChanges();
                     }
                 }

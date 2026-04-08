@@ -65,6 +65,7 @@ namespace Dartsmanager
                     BT_Login.Background = new SolidColorBrush(Colors.IndianRed);
                 }
             }
+            Frame_Pagina.Navigate(new HomePage(_actieve_gebruiker));
             ShowAdminButton();
         }
 
@@ -78,12 +79,12 @@ namespace Dartsmanager
 
         private void BT_Home_Click(object sender, RoutedEventArgs e)
         {
-            
+            Frame_Pagina.Navigate(new HomePage(_actieve_gebruiker));
         }
 
         private void BT_Profiel_Click(object sender, RoutedEventArgs e)
         {
-            Frame_Pagina.Navigate(new UserPage(_actieve_gebruiker)); 
+            Frame_Pagina.Navigate(new UserPage(_actieve_gebruiker, _actieve_gebruiker, Frame_Pagina)); 
         }
 
         private void BT_Speler_Click(object sender, RoutedEventArgs e)
@@ -93,7 +94,7 @@ namespace Dartsmanager
 
         private void BT_Tornooi_Click(object sender, RoutedEventArgs e)
         {
-
+            Frame_Pagina.Navigate(new TournamentOverview(_actieve_gebruiker, Frame_Pagina));
         }
 
         private void BT_Wedstrijd_Click(object sender, RoutedEventArgs e)

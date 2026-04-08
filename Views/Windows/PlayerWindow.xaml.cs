@@ -30,11 +30,11 @@ namespace Dartsmanager.Views.Windows
         private void BindData()
         {
             List<Adress> adressen = AdressService.GetAll();
-            adressen.Add( new Adress { Id = 0, Straat = "-- Selecteer adres --" });
+            adressen.Add( new Adress {Straat = "-- Selecteer adres --" });
             CB_Adresses.ItemsSource = adressen;
 
             List<User> gebruikers = UserService.GetAll();
-            gebruikers.Add(new User { Id = 0, Username = "-- Selecteer gebruiker --" });
+            gebruikers.Add(new User { Username = "-- Selecteer gebruiker --" });
             CB_Users.ItemsSource = gebruikers;
         }
 
@@ -77,6 +77,13 @@ namespace Dartsmanager.Views.Windows
             // Telefoonnummer ophalen
             string telefoonnummer = TB_Telefoonnummer.Text;
 
+            // Adres ophalen
+            int? adresId = null;
+            if (CB_Adresses.SelectedItem is Adress adres)
+            {
+                adresId = adres.Id;
+            }
+
             // Speler aanmaken
             Player nieuwe_speler = new Player
             {
@@ -84,8 +91,11 @@ namespace Dartsmanager.Views.Windows
                 Naam = naam,
                 Geboortedatum = geboortedatum,
                 Mail = mail,
-                Telefoonnummer = telefoonnummer
-            };                    
+                Telefoonnummer = telefoonnummer,
+                AdresId = adresId
+            };
+
+            
 
             // User ophalen uit combobox indien er 1 is geselecteerd
             if (CB_Users.SelectedItem is User gebruiker)

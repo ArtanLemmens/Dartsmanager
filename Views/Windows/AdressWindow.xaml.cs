@@ -29,7 +29,7 @@ namespace Dartsmanager.Views.Windows
         private void BindData()
         {
             List<Country> landen = AdressService.GetAllCountry();
-            landen.Add(new Country { Id = 0, Naam = "-- Selecteer land --" });
+            landen.Add(new Country {Naam = "-- Selecteer land --" });
             CB_Landen.ItemsSource = landen;
         }
 
@@ -47,7 +47,7 @@ namespace Dartsmanager.Views.Windows
             string huisnummer_txt = TB_Huisnummer.Text;
             if (!int.TryParse(huisnummer_txt, out int huisnummer))
             {
-                return;
+                MessageBox.Show("Graag een nummeriek huisnummer."); return;
             }
             string toevoeging = TB_Toevoeging.Text;
             string postcode = TB_Postcode.Text;

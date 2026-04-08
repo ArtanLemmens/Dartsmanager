@@ -37,7 +37,7 @@ namespace Dartsmanager.Views.Pages
         private void BindData()
         {
             List<Adress> adressen = AdressService.GetAll();
-            adressen.Add(new Adress { Id = 0, Straat = "-- Selecteer adres --" });
+            adressen.Add(new Adress {Straat = "-- Selecteer adres --" });
             CB_Adresses.ItemsSource = adressen;
         }
 
@@ -57,6 +57,7 @@ namespace Dartsmanager.Views.Pages
                     TB_Telefoonnummer.Text = _actieve_speler.Telefoonnummer;
                     CB_Adresses.SelectedValue = _actieve_speler.AdresId;
                     BT_Create_Adress.Visibility = Visibility.Visible;
+                    BT_Update_Speler.Visibility = Visibility.Visible;
                 }
                 else
                 {
@@ -65,6 +66,7 @@ namespace Dartsmanager.Views.Pages
                     TB_Telefoonnummer.Visibility = Visibility.Collapsed;
                     CB_Adresses.Visibility = Visibility.Collapsed;
                     BT_Create_Adress.Visibility = Visibility.Collapsed;
+                    BT_Update_Speler.Visibility = Visibility.Collapsed;
                 }
             }
         }

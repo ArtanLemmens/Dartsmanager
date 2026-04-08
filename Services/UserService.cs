@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows;
 
 namespace Dartsmanager.Services
 {
@@ -31,6 +32,13 @@ namespace Dartsmanager.Services
             {
                 var gebruiker = db.Users.FirstOrDefault(u => u.Username == naam);
                 return gebruiker;
+            }
+        }
+        public static List<User> GetUsersFromNameFilter(string filter)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                return db.Users.Where(p => p.Username.Contains(filter)).ToList();
             }
         }
         public static bool CheckExistingName(string naam)
@@ -141,6 +149,18 @@ namespace Dartsmanager.Services
                     var bestaandeGebruiker = db.Users.FirstOrDefault(u => u.Id == gebruiker.Id);
                     if (bestaandeGebruiker != null)
                     {
+                        var bestaandeSpeler = db.Players.FirstOrDefault(p => p.Id == gebruiker.PlayerId);
+                        if (bestaandeSpeler != null)
+                        {
+                            MessageBoxResult result = MessageBox.Show($"Deze gebruiker is gekoppeld aan speler:\n{bestaandeSpeler.VoornaamNaam}.\nBent u echt zeker dat u wilt verwijderen?",
+                                                  "Bevestig verwijdering",
+                                                  MessageBoxButton.YesNo,
+                                                  MessageBoxImage.Question);
+                            if (result == MessageBoxResult.No)
+                            {
+                                return;
+                            }
+                        }
                         db.Users.Remove(bestaandeGebruiker);
                         db.SaveChanges();
                     }
@@ -151,5 +171,7 @@ namespace Dartsmanager.Services
                 throw new InvalidOperationException("Deze gebruiker kan niet worden verwijderd omdat hij nog gekoppeld is aan een project of andere gegevens.");
             }
         }
+
+
     }
 }

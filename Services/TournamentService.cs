@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Dartsmanager.Services
 {
@@ -17,6 +19,48 @@ namespace Dartsmanager.Services
                 var tornooien = db.Tournaments.Include(t => t.Adres).Include(t => t.Status).ToList();
                 return tornooien;
             }
+        }
+        public static List<Tournament> GetTournamentsFromNameFilter(string filter)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                return db.Tournaments.Where(t => t.Naam.Contains(filter)).ToList();
+            }
+        }
+        public static bool CheckExistingJaargang(string naam, int jaargang)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                bool bestaand_tornooi = false;
+                var tornooi = db.Tournaments.FirstOrDefault(t => t.Naam == naam && t.Jaargang == jaargang);
+                if (tornooi != null)
+                {
+                    bestaand_tornooi = true;
+                }
+                return bestaand_tornooi;
+            }
+        }
+        public static bool CheckMaxInschrijvingen(int max_inschrijvingen)
+        {
+            bool max_inschrijvingen_OK = false;
+            // Inschrijvingen moet groter dan 3 zijn
+            if (max_inschrijvingen > 3)
+            {
+                // Start met kleinste macht van 2
+                int macht = 1;
+
+                // Blijf verdubbelen zolang (macht * 2) nog een deler is van het getal (zoek de grootste macht van 2 die het getal exact deelt)
+                while (max_inschrijvingen % (macht * 2) == 0)
+                {
+                    macht *= 2;
+                }
+                // Als het getal gelijk is aan die grootste deler, dan betekent dit dat het getal zelf een macht van 2 is (bv. 4, 8, 16, 32, ...)
+                if (max_inschrijvingen == macht)
+                {
+                    max_inschrijvingen_OK = true;
+                }
+            }
+            return max_inschrijvingen_OK;
         }
         public static void Update(Tournament tornooi)
         {
@@ -51,6 +95,12 @@ namespace Dartsmanager.Services
             {
                 using (var db = new DbDartsmanagerContext())
                 {
+                    // start status zetten op niet gestart
+                    var status = db.Statuses.First();
+                    if (status != null)
+                    {
+                        tornooi.StatusId = status.Id;
+                    }
                     db.Tournaments.Add(tornooi);
                     db.SaveChanges();
                 }

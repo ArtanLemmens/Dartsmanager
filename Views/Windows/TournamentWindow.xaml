@@ -1,0 +1,62 @@
+﻿<Window x:Class="Dartsmanager.Views.Windows.TournamentWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Dartsmanager.Views.Windows"
+        mc:Ignorable="d"
+        Title="TornooiScherm" Height="600" Width="300" WindowStartupLocation="CenterScreen">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto "/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>            
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Nieuw tornooi" Style="{StaticResource TextBlock_H1}" HorizontalAlignment="Center"/>
+
+        <TextBlock Grid.Row="1" Text="Naam" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
+        <ComboBox Grid.Row="2" x:Name="CB_Namen" Style="{StaticResource ComboBox_C1}" SelectionChanged="CB_Namen_SelectionChanged"/>
+        <TextBox Grid.Row="3" x:Name="TB_Naam" Style="{StaticResource TextBox_Info}" Visibility="Collapsed"/>
+
+        <TextBlock Grid.Row="4" Text="Jaargang" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
+        <TextBox Grid.Row="5" x:Name="TB_Jaargang" Style="{StaticResource TextBox_Info}" />
+        
+        <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Left">
+            <TextBlock Text="Adres" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0" />
+            <Button x:Name="BT_Create_Adress" Content="Creëer" Click="BT_Create_Adress_Click" Style="{StaticResource Button_B3}" Margin="5,5,5,0"/>
+        </StackPanel>
+        <ComboBox Grid.Row="7" x:Name="CB_Adresses" Style="{StaticResource ComboBox_C1}" DisplayMemberPath="AdresVolledig" SelectedValuePath="Id"/>        
+        
+
+        <TextBlock Grid.Row="8" Text="Datum" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
+        <TextBox Grid.Row="9" x:Name="TB_Datum" Style="{StaticResource TextBox_Info}" />
+
+        <TextBlock Grid.Row="10" Text="Max inschrijvingen" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
+        <TextBox Grid.Row="11" x:Name="TB_MaxInschrijving" Style="{StaticResource TextBox_Info}" />
+
+
+        <Button Grid.Row="12" x:Name="BT_Create" Content="Creëer" Click="BT_Create_Click" 
+            Style="{StaticResource Button_B2}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,20,5,5"/>
+
+        <Button Grid.Row="13" x:Name="BT_Cancel" Content="Cancel" Click="BT_Cancel_Click" 
+            Style="{StaticResource Button_B3}" Foreground="Red"/>
+
+    </Grid>
+</Window>
+

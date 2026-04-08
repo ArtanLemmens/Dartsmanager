@@ -48,19 +48,18 @@ namespace Dartsmanager.Views.Pages
                 return;
             }
             string filter = TB_Speler.Text;
+            List<Player> spelers;
             // Bij een lege waarde of "zoek speler" mogen al de spelers getoond worden
             if (string.IsNullOrWhiteSpace(filter) || filter == "Zoek speler...")
             {
-                var spelers = PlayerService.GetAll();
-                if (spelers.Count > 0)
-                {
-                    LB_Spelers.ItemsSource = spelers;
-                }
-                return;
+                spelers = PlayerService.GetAll();                
             }
-            // filteren op de gefilterde waarde
-            var gefilterde_spelers = PlayerService.GetPlayersFromNameFilter(filter);
-            LB_Spelers.ItemsSource = gefilterde_spelers;
+            else
+            {
+                // filteren op de gefilterde waarde
+                spelers = PlayerService.GetPlayersFromNameFilter(filter);
+            }            
+            LB_Spelers.ItemsSource = spelers;
             LB_Spelers.Items.Refresh();
         }
 

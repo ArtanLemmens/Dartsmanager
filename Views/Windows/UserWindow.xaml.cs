@@ -24,7 +24,16 @@ namespace Dartsmanager.Views.Windows
         {
             InitializeComponent();
             TB_Username.Focus();
+            BindData();
         }
+
+        private void BindData()
+        {
+            List<Player> spelers = PlayerService.GetAll();
+            CB_Spelers.ItemsSource = spelers;
+        }
+
+
         private void BT_Create_Click(object sender, RoutedEventArgs e)
         {
             // Username ophalen en kijken of hij niet bestaat

@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:Dartsmanager.Views.Pages"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="1000"
-      Title="PlayerOverview">
+      Title="Speleroverzicht">
     <Page.Resources>
         <DataTemplate x:Key="Template_Spelers">
             <Grid Margin="0" >

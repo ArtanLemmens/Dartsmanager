@@ -16,8 +16,10 @@
         <!-- ADMINMENU -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Height="50">
             <Button x:Name="BT_Users" Content="Gebruikers" Click="BT_Users_Click" Style="{StaticResource Button_B1}" />
+            <Button x:Name="BT_Adresses" Content="Adressen" Click="BT_Adresses_Click" Style="{StaticResource Button_B1}" />
+            <Button x:Name="BT_Countries" Content="Landen" Click="BT_Countries_Click" Style="{StaticResource Button_B1}" />
             <Button x:Name="BT_Players" Content="Spelers" Click="BT_Players_Click" Style="{StaticResource Button_B1}" />
-            <Button x:Name="BT_Tournaments" Content="Tornooien" Click="BT_Tournaments_Click" Style="{StaticResource Button_B1}" />            
+            <Button x:Name="BT_Tournaments" Content="Tornooien" Click="BT_Tournaments_Click" Style="{StaticResource Button_B1}" />
         </StackPanel>
 
         <!-- ADMINPAGE -->

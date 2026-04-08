@@ -23,11 +23,15 @@ namespace Dartsmanager.Views.Pages
     public partial class UserPage : Page
     {
         private User? _actieve_gebruiker = null;
+        private User? _geselecteerde_gebruiker = null;
+        private Frame _frame;
 
-        public UserPage(User? actieve_gebruiker)
+        public UserPage(User? actieve_gebruiker, User? geselecteerde_gebruiker, Frame frame)
         {
             InitializeComponent();
             _actieve_gebruiker = actieve_gebruiker;
+            _geselecteerde_gebruiker = geselecteerde_gebruiker;
+            _frame = frame;
             SetActiveUserValues();
             LoadPlayerData();
             BindData();
@@ -40,25 +44,32 @@ namespace Dartsmanager.Views.Pages
 
         private void SetActiveUserValues()
         {
-            if (_actieve_gebruiker != null)
+            if (_geselecteerde_gebruiker != null)
             {
                 TB_NotLoggedIn.Visibility = Visibility.Collapsed;
                 Grid_UserInfo.Visibility = Visibility.Visible;
-                TB_Username.Text = _actieve_gebruiker.Username;
-                CB_Spelers.SelectedValue = _actieve_gebruiker.PlayerId;
-                CHB_Speler_Bevestigd.IsChecked = _actieve_gebruiker.PlayerIdBevestigd;
+                TB_Username.Text = _geselecteerde_gebruiker.Username;
+                CB_Spelers.SelectedValue = _geselecteerde_gebruiker.PlayerId;
+                CHB_Speler_Bevestigd.IsChecked = _geselecteerde_gebruiker.PlayerIdBevestigd;
+                BT_Update_Speler_Bevestigd.Visibility = Visibility.Collapsed;
             }
             else
             {
                 TB_NotLoggedIn.Visibility = Visibility.Visible;
                 Grid_UserInfo.Visibility = Visibility.Collapsed;
             }
+            // Indien admin, checkbox vrijgeven
+            if (_actieve_gebruiker != null && _actieve_gebruiker.IsAdmin == true)
+            {
+                CHB_Speler_Bevestigd.IsEnabled = true;
+                BT_Update_Speler_Bevestigd.Visibility = Visibility.Visible;
+            }
         }
 
         private void LoadPlayerData()
         {
             // enkel speler data tonen als de actieve speler ook is bevestigd door de admin!
-            if (_actieve_gebruiker != null && _actieve_gebruiker.Player != null && _actieve_gebruiker.PlayerIdBevestigd == true)
+            if (_geselecteerde_gebruiker != null && _geselecteerde_gebruiker.Player != null && _geselecteerde_gebruiker.PlayerIdBevestigd == true)
             {
                 Grid_PlayerInfo.Visibility = Visibility.Visible;
             }
@@ -70,81 +81,108 @@ namespace Dartsmanager.Views.Pages
 
         private void BT_Update_Name_Click(object sender, RoutedEventArgs e)
         {
-            if (_actieve_gebruiker == null)
+            if (_geselecteerde_gebruiker == null)
             {
-                MessageBox.Show("Er is geen gebruiker ingelogd om up te daten"); return;
+                MessageBox.Show("Er is geen gebruiker om up te daten"); return;
             }
             // Wachtwoord vragen om te bevestigen
-            var WachtwoordScherm = new PasswordWindow(_actieve_gebruiker);
+            var WachtwoordScherm = new PasswordWindow(_geselecteerde_gebruiker);
             WachtwoordScherm.ShowDialog();
             // Als het wachtwoord correct is, wijziging doorvoeren
             if (WachtwoordScherm._CorrectWachtwoord == true)
             {
                 // Username ophalen en kijken of hij niet bestaat in een andere gebruiker
                 string username = TB_Username.Text;
-                if (username == _actieve_gebruiker.Username) // Username ongewijzigd => geen wijziging of melding nodig
+                if (username == _geselecteerde_gebruiker.Username) // Username ongewijzigd => geen wijziging of melding nodig
                 {
                     return;
                 }
-                if (UserService.CheckExistingName(username, _actieve_gebruiker.Id) == true) // Username bestaat al in database
+                if (UserService.CheckExistingName(username, _geselecteerde_gebruiker.Id) == true) // Username bestaat al in database
                 {
                     MessageBox.Show("Deze username bestaat al.\nGelieve een andere naam te kiezen."); return;
                 }
-                _actieve_gebruiker.Username = username;
+                _geselecteerde_gebruiker.Username = username;
                 // Aanpassen in de database
-                UserService.Update(_actieve_gebruiker);
+                UserService.Update(_geselecteerde_gebruiker);
                 MessageBox.Show($"Uw username werd gewijzigd naar: {username}.");
             }
         }
 
         private void BT_Update_Wachtwoord_Click(object sender, RoutedEventArgs e)
         {
-            if (_actieve_gebruiker == null)
+            if (_geselecteerde_gebruiker == null)
             {
-                MessageBox.Show("Er is geen gebruiker ingelogd om up te daten"); return;
+                MessageBox.Show("Er is geen gebruiker om up te daten"); return;
             }
             // Wachtwoord vragen om te bevestigen
-            var WachtwoordScherm = new PasswordWindow(_actieve_gebruiker);
+            var WachtwoordScherm = new PasswordWindow(_geselecteerde_gebruiker);
             WachtwoordScherm.ShowDialog();
             // Als het wachtwoord correct is, wijziging doorvoeren
             if (WachtwoordScherm._CorrectWachtwoord == true)
             {
                 string nieuw_password = TB_Wachtwoord.Password;
-                _actieve_gebruiker.WachtwoordHash = BC.HashPassword(nieuw_password);
+                _geselecteerde_gebruiker.WachtwoordHash = BC.HashPassword(nieuw_password);
                 // Aanpassen in de database
-                UserService.Update(_actieve_gebruiker);
+                UserService.Update(_geselecteerde_gebruiker);
                 MessageBox.Show($"Uw wachtwoord werd gewijzigd.");
             }
         }
 
         private void BT_Update_Player_Click(object sender, RoutedEventArgs e)
         {
-            if (_actieve_gebruiker == null)
+            if (_geselecteerde_gebruiker == null)
             {
-                MessageBox.Show("Er is geen gebruiker ingelogd om up te daten"); return;
+                MessageBox.Show("Er is geen gebruiker om up te daten"); return;
             }            
             // Speler ophalen uit combobox indien er 1 is geselcteerd
             if (CB_Spelers.SelectedItem is Player speler)
             {
                 // Wachtwoord vragen om te bevestigen
-                var WachtwoordScherm = new PasswordWindow(_actieve_gebruiker);
+                var WachtwoordScherm = new PasswordWindow(_geselecteerde_gebruiker);
                 WachtwoordScherm.ShowDialog();
                 // Als het wachtwoord correct is, wijziging doorvoeren
                 if (WachtwoordScherm._CorrectWachtwoord == true)
                 {
-                    if (UserService.CheckExistingPlayerLink(speler, _actieve_gebruiker.Id) == true)
+                    if (UserService.CheckExistingPlayerLink(speler, _geselecteerde_gebruiker.Id) == true)
                     {
                         MessageBox.Show("Deze speler is al gelinkt aan een andere gebruiker!\nNeem contact op met onze admins indien u dit wilt laten wijzigen."); return;
                     }
-                    _actieve_gebruiker.PlayerId = speler.Id;
-                    _actieve_gebruiker.PlayerIdBevestigd = false;
+                    _geselecteerde_gebruiker.PlayerId = speler.Id;
+                    // Indien de actieve gebruiker een admin is mag de speler ineens bevestigd worden
+                    if (_actieve_gebruiker != null && _actieve_gebruiker.IsAdmin == true)
+                    {
+                        _geselecteerde_gebruiker.PlayerIdBevestigd = true;
+                    }
+                    else
+                    {
+                        _geselecteerde_gebruiker.PlayerIdBevestigd = false;
+                        MessageBox.Show($"Uw aanvraag tot spelerskoppeling werd ingediend bij onze admins.");
+                    }
                     // Aanpassen in de database
-                    UserService.Update(_actieve_gebruiker);
-                    MessageBox.Show($"Uw aanvraag tot spelerskoppeling werd ingediend bij onze admins.");
+                    UserService.Update(_geselecteerde_gebruiker);                    
                     // Spelerdata laden
                     LoadPlayerData();
                 }
             }
+        }
+        private void BT_Update_Speler_Bevestigd_Click(object sender, RoutedEventArgs e)
+        {
+            if (_geselecteerde_gebruiker == null)
+            {
+                MessageBox.Show("Er is geen gebruiker m up te daten"); return;
+            }
+            if (CHB_Speler_Bevestigd.IsChecked == true)
+            {
+                _geselecteerde_gebruiker.PlayerIdBevestigd = true;
+            }
+            else
+            {
+                _geselecteerde_gebruiker.PlayerIdBevestigd = false;
+            }
+            UserService.Update(_geselecteerde_gebruiker);
+            MessageBox.Show($"De spelerskoppeling is bevestigd.");
+            // Spelerdata laden
+            LoadPlayerData();
         }
 
         private void BT_Create_Player_Click(object sender, RoutedEventArgs e)
@@ -173,8 +211,6 @@ namespace Dartsmanager.Views.Pages
         {
 
         }
-
-
         
     }
 }

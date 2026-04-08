@@ -12,20 +12,21 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="120"/>
             <ColumnDefinition Width="200"/>
-            <ColumnDefinition Width="125"/>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="100"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Button Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" x:Name="BT_PlayerOverview"
@@ -56,8 +57,8 @@
         <TextBox Grid.Row="8" Grid.Column="1" x:Name="TB_Telefoonnummer" Style="{StaticResource TextBox_Info}"/>        
 
         <TextBlock Grid.Row="9" Grid.Column="0" Text="Adres" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
-        <ComboBox Grid.Row="9" Grid.Column="1" x:Name="CB_Adresses" Style="{StaticResource ComboBox_C1}" DisplayMemberPath="AdresVolledig" SelectedValuePath="Id"/>
-        <Button Grid.Row="9" Grid.Column="2" x:Name="BT_Create_Adress" Content="Creëer" Click="BT_Create_Adress_Click" Style="{StaticResource Button_B3}" Margin="5,5,5,0"/>
+        <ComboBox Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="2" x:Name="CB_Adresses" Style="{StaticResource ComboBox_C1}" DisplayMemberPath="AdresVolledig" SelectedValuePath="Id"/>
+        <Button Grid.Row="9" Grid.Column="3" x:Name="BT_Create_Adress" Content="Creëer" Click="BT_Create_Adress_Click" Style="{StaticResource Button_B3}" Margin="5,5,5,0"/>
     </Grid>
 
 </Page>

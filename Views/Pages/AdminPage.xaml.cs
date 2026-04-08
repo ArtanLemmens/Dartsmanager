@@ -34,10 +34,20 @@ namespace Dartsmanager.Views.Pages
 
         private void BT_Tournaments_Click(object sender, RoutedEventArgs e)
         {
-
+            Frame_Admin.Navigate(new TournamentOverview(_actieve_gebruiker, Frame_Admin));
         }
 
         private void BT_Users_Click(object sender, RoutedEventArgs e)
+        {
+            Frame_Admin.Navigate(new UserOverview(_actieve_gebruiker, Frame_Admin));
+        }
+
+        private void BT_Adresses_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BT_Countries_Click(object sender, RoutedEventArgs e)
         {
 
         }
