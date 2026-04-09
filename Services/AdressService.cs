@@ -124,24 +124,6 @@ namespace Dartsmanager.Services
                 return bestaand_adres;
             }
         }
-        public static int? GetIdFromFullAdress(string straat, int huisnummer, string? toevoeging, string? postcode, string? gemeente, int? countryId)
-        {
-            using (var db = new DbDartsmanagerContext())
-            {
-
-                var adres = db.Adresses.FirstOrDefault(a => a.Straat == straat
-                && a.Huisnummer == huisnummer
-                && a.Toevoeging == toevoeging
-                && a.Postcode == postcode
-                && a.Gemeente == gemeente
-                && a.CountryId == countryId);
-                if (adres != null)
-                {
-                    return adres.Id;
-                }
-                return null;
-            }
-        }
         public static void Update(Adress adres)
         {
             try

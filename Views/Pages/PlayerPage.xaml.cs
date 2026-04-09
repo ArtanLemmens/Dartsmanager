@@ -87,7 +87,7 @@ namespace Dartsmanager.Views.Pages
                 _actieve_speler.Telefoonnummer = TB_Telefoonnummer.Text;
                 if (CB_Adresses.SelectedItem is Adress adres)
                 {
-                    _actieve_speler.AdresId = AdressService.GetIdFromFullAdress(adres.Straat, adres.Huisnummer, adres.Toevoeging, adres.Postcode, adres.Gemeente, adres.CountryId);
+                    _actieve_speler.AdresId = adres.Id;
                 }
                 PlayerService.Update(_actieve_speler);
                 MessageBox.Show("De spelersgegevens zijn aangepast");

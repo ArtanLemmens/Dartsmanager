@@ -34,7 +34,7 @@
         </StackPanel>
 
         <!-- MENU-->
-        <Menu Grid.Row="1" Grid.Column="0"
+        <Menu Grid.Row="1" Grid.Column="0" x:Name="Hoofdmenu"
               Foreground="White" Background="#1F2937" FontWeight="Medium"
               HorizontalAlignment="Left"
               Padding="5" MaxWidth="160">

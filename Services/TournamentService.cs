@@ -40,6 +40,19 @@ namespace Dartsmanager.Services
                 return bestaand_tornooi;
             }
         }
+        public static bool CheckExistingJaargang(string naam, int jaargang, int id)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                bool bestaand_tornooi = false;
+                var tornooi = db.Tournaments.FirstOrDefault(t => t.Naam == naam && t.Jaargang == jaargang && t.Id != id);
+                if (tornooi != null)
+                {
+                    bestaand_tornooi = true;
+                }
+                return bestaand_tornooi;
+            }
+        }
         public static bool CheckMaxInschrijvingen(int max_inschrijvingen)
         {
             bool max_inschrijvingen_OK = false;
