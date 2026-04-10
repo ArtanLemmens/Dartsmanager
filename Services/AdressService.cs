@@ -93,7 +93,7 @@ namespace Dartsmanager.Services
             }
             catch
             {
-                throw new InvalidOperationException("Dit land kan niet worden verwijderd omdat het nog gekoppeld is aan een project of andere gegevens.");
+                throw new InvalidOperationException("Dit land kan niet worden verwijderd omdat het nog gekoppeld is aan andere gegevens.");
             }
         }
 
@@ -179,7 +179,7 @@ namespace Dartsmanager.Services
             }
             catch
             {
-                throw new InvalidOperationException("Dit adres kan niet worden verwijderd omdat het nog gekoppeld is aan een project of andere gegevens.");
+                throw new InvalidOperationException("Dit adres kan niet worden verwijderd omdat het nog gekoppeld is aan andere gegevens.");
             }
         }
     }

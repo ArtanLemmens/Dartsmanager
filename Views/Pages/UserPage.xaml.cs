@@ -69,7 +69,7 @@ namespace Dartsmanager.Views.Pages
         private void LoadPlayerData()
         {
             // enkel speler data tonen als de actieve speler ook is bevestigd door de admin!
-            if (_geselecteerde_gebruiker != null && _geselecteerde_gebruiker.Player != null && _geselecteerde_gebruiker.PlayerIdBevestigd == true)
+            if (_geselecteerde_gebruiker != null && _geselecteerde_gebruiker.PlayerId != null && _geselecteerde_gebruiker.PlayerIdBevestigd == true)
             {
                 Grid_PlayerInfo.Visibility = Visibility.Visible;
             }
@@ -194,7 +194,14 @@ namespace Dartsmanager.Views.Pages
 
         private void BT_Player_Data_Click(object sender, RoutedEventArgs e)
         {
-
+            if (_geselecteerde_gebruiker != null && _geselecteerde_gebruiker.PlayerId != null && _geselecteerde_gebruiker.PlayerIdBevestigd == true)
+            {
+                var speler = PlayerService.GetPlayerFromId((int)_geselecteerde_gebruiker.PlayerId);
+                if (speler != null)
+                {
+                    Frame_Player.Navigate(new PlayerPage(_actieve_gebruiker, speler, Frame_Player));
+                }
+            }
         }
 
         private void BT_Player_Tornooien_Click(object sender, RoutedEventArgs e)

@@ -5,60 +5,122 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Dartsmanager.Views.Pages"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="1000" d:DesignWidth="800"
       Title="TournamentPage">
-
-
-
-    <Grid Margin="5" >
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="120"/>
-            <ColumnDefinition Width="200"/>
-            <ColumnDefinition Width="100"/>
-            <ColumnDefinition Width="100"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <Button Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" x:Name="BT_TournamentOverview"
-                Content="Terug naar overzicht" Click="BT_TournamentOverview_Click" Style="{StaticResource Button_B1}" />
+        <!-- Hoofding met togglebutton voor de tornooigegevens -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <TextBlock Text="Tornooigegevens" Style="{StaticResource TextBlock_H2}" />
+            <ToggleButton x:Name="Toggle_Tornooigegevens" Style="{StaticResource TB_PijlOB}" IsChecked="True"/>
+        </StackPanel>
 
-        <TextBlock Grid.Row="1" Grid.Column="0" Text="Overzicht tornooi" Style="{StaticResource TextBlock_H2}" />
-        <Button Grid.Row="1" Grid.Column="1" x:Name="BT_Update_Tornooi" Content="Update tornooi" Click="BT_Update_Tornooi_Click" Style="{StaticResource Button_B3}"/>
+        <!-- Menu voor de tornooigegevens -->
+        <Grid Margin="5" Grid.Row="1" Visibility="{Binding IsChecked, ElementName=Toggle_Tornooigegevens, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" x:Name="BT_TournamentOverview"
+            Content="Terug naar overzicht" Click="BT_TournamentOverview_Click" Style="{StaticResource Button_B1}" />
 
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="Naam" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
-        <TextBox Grid.Row="2" Grid.Column="1" x:Name="TB_Naam" Style="{StaticResource TextBox_Info}"/>
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Overzicht tornooi" Style="{StaticResource TextBlock_H2}" />
+            <Button Grid.Row="1" Grid.Column="1" x:Name="BT_Update_Tornooi" Content="Update tornooi" Click="BT_Update_Tornooi_Click" Style="{StaticResource Button_B3}"/>
 
-        <TextBlock Grid.Row="3" Grid.Column="0" Text="Jaargang" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
-        <TextBox Grid.Row="3" Grid.Column="1" x:Name="TB_Jaargang" Style="{StaticResource TextBox_Info}"/>
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Naam" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
+            <TextBox Grid.Row="2" Grid.Column="1" x:Name="TB_Naam" Style="{StaticResource TextBox_Info}"/>
 
-        <TextBlock Grid.Row="4" Grid.Column="0" Text="Adres" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
-        <ComboBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" x:Name="CB_Adresses" Style="{StaticResource ComboBox_C1}" DisplayMemberPath="AdresVolledig" SelectedValuePath="Id"/>
-        <Button Grid.Row="4" Grid.Column="3" x:Name="BT_Create_Adress" Content="Creëer" Click="BT_Create_Adress_Click" Style="{StaticResource Button_B3}" Margin="5,5,5,0"/>
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="Jaargang" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
+            <TextBox Grid.Row="3" Grid.Column="1" x:Name="TB_Jaargang" Style="{StaticResource TextBox_Info}"/>
 
-        <TextBlock Grid.Row="5" Grid.Column="0" Text="Datum" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
-        <TextBox Grid.Row="5" Grid.Column="1" x:Name="TB_Datum" Style="{StaticResource TextBox_Info}"/>
+            <TextBlock Grid.Row="4" Grid.Column="0" Text="Adres" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
+            <ComboBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" x:Name="CB_Adresses" Style="{StaticResource ComboBox_C1}" DisplayMemberPath="AdresVolledig" SelectedValuePath="Id"/>
+            <Button Grid.Row="4" Grid.Column="3" x:Name="BT_Create_Adress" Content="Creëer" Click="BT_Create_Adress_Click" Style="{StaticResource Button_B3}" Margin="5,5,5,0"/>
 
-        <TextBlock Grid.Row="6" Grid.Column="0" Text="Max inschrijvingen" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
-        <TextBox Grid.Row="6" Grid.Column="1" x:Name="TB_Max_Inschrijvingen" Style="{StaticResource TextBox_Info}"/>
+            <TextBlock Grid.Row="5" Grid.Column="0" Text="Datum" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
+            <TextBox Grid.Row="5" Grid.Column="1" x:Name="TB_Datum" Style="{StaticResource TextBox_Info}"/>
 
-        <TextBlock Grid.Row="7" Grid.Column="0" Text="Status" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
-        <ComboBox Grid.Row="7" Grid.Column="1" x:Name="CB_Statuses" Style="{StaticResource ComboBox_C1}" DisplayMemberPath="Naam" SelectedValuePath="Id"/>
+            <TextBlock Grid.Row="6" Grid.Column="0" Text="Max inschrijvingen" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
+            <TextBox Grid.Row="6" Grid.Column="1" x:Name="TB_Max_Inschrijvingen" Style="{StaticResource TextBox_Info}"/>
 
-        <TextBlock Grid.Row="8" Grid.Column="0" Text="Actieve ronde" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
-        <TextBlock Grid.Row="8" Grid.Column="1" x:Name="TB_Ronde" Style="{StaticResource TextBlock_p}"/>
+            <TextBlock Grid.Row="7" Grid.Column="0" Text="Status" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
+            <ComboBox Grid.Row="7" Grid.Column="1" x:Name="CB_Statuses" Style="{StaticResource ComboBox_C1}" DisplayMemberPath="Naam" SelectedValuePath="Id"/>
+
+            <TextBlock Grid.Row="8" Grid.Column="0" Text="Actieve ronde" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
+            <TextBlock Grid.Row="8" Grid.Column="1" x:Name="TB_Ronde" Style="{StaticResource TextBlock_p}"/>
+
+        </Grid>
+
+        <!-- Playerscontrols -->
+        <Grid Grid.Row="2" x:Name="Grid_PlayerControl">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Height="50">
+                <Button x:Name="BT_Inschrijven" Content="Schrijf in" Click="BT_Inschrijven_Click" Style="{StaticResource Button_B4}" />
+                <Button x:Name="BT_Uitschrijven" Content="Schrijf uit" Click="BT_Uitschrijven_Click" Style="{StaticResource Button_B4}" />
+            </StackPanel>
+        </Grid>
+        
+        <!-- Admincontrols -->
+        <Grid Grid.Row="3" x:Name="Grid_AdminControl">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Height="50">
+                <Button x:Name="BT_Speler_Inschrijven" Content="Speler Inschrijven" Click="BT_Speler_Inschrijven_Click" Style="{StaticResource Button_B4}" />
+                <Button x:Name="BT_Speler_Uitschrijven" Content="Speler Uitschrijven" Click="BT_Speler_Uitschrijven_Click" Style="{StaticResource Button_B4}" />
+                <Button x:Name="BT_Tournament_Wedstrijdschema" Content="Creëer wedstrijdschema" Click="BT_Tournament_Wedstrijdschema_Click" Style="{StaticResource Button_B4}" />
+            </StackPanel>
+        </Grid>
+
+        <!-- TORNOOI SUBMENU -->
+        <Grid Grid.Row="4" x:Name="Grid_TournamentInfo">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- TORNOOI SUBMENU -->
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Height="50">
+                <Button x:Name="BT_Tournament_Spelers" Content="Spelers" Click="BT_Tournament_Spelers_Click" Style="{StaticResource Button_B1}" />
+                <Button x:Name="BT_Tournament_Groepsfase" Content="Groepsfase" Click="BT_Tournament_Groepsfase_Click" Style="{StaticResource Button_B1}" />
+                <Button x:Name="BT_Tournament_KOfase" Content="Knock-outfase" Click="BT_Tournament_KOfase_Click" Style="{StaticResource Button_B1}" />
+                <Button x:Name="BT_Tournament_Wedstrijden" Content="Wedstrijden" Click="BT_Tournament_Wedstrijden_Click" Style="{StaticResource Button_B1}" />
+            </StackPanel>
+
+            <!-- TournamentFrame -->
+            <Frame x:Name="Frame_Tournament"  Grid.Row="1"  NavigationUIVisibility="Hidden"/>
+        </Grid>
 
     </Grid>
+
+    
 
 </Page>

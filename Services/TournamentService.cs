@@ -139,7 +139,128 @@ namespace Dartsmanager.Services
             }
             catch
             {
-                throw new InvalidOperationException("Dit tornooi kan niet worden verwijderd omdat hij nog gekoppeld is aan een project of andere gegevens.");
+                throw new InvalidOperationException("Dit tornooi kan niet worden verwijderd omdat hij nog gekoppeld is aan andere gegevens.");
+            }
+        }
+
+        public static void CreateGameSchedule(Tournament tornooi)
+        {
+            try
+            {
+                using (var db = new DbDartsmanagerContext())
+                {
+                    var bestaandTornooi = db.Tournaments.FirstOrDefault(t => t.Id == tornooi.Id);
+                    if (bestaandTornooi != null)
+                    {
+                       // Aantal inschrijvingen opzoeken
+
+
+                        db.SaveChanges();
+                    }
+                }
+            }
+            catch
+            {
+                throw new InvalidOperationException("Kon het werdstrijdschema niet aanmaken.");
+            }
+        }
+
+        // Registreren
+        public static List<Registration> GetAllRegistrations(Tournament tornooi)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                var inschrijvingen = db.Registrations.Where(r => r.TournamentId == tornooi.Id).ToList();
+                return inschrijvingen;
+            }
+        }
+        public static void RegisterPlayer(Tournament tornooi, Player speler)
+        {
+            try
+            {
+                using (var db = new DbDartsmanagerContext())
+                {
+                    var bestaandTornooi = db.Tournaments.FirstOrDefault(t => t.Id == tornooi.Id);
+                    var bestaandeSpeler = db.Players.FirstOrDefault(p => p.Id == speler.Id);
+                    if (bestaandTornooi != null && bestaandeSpeler != null)
+                    {
+                        // Kijken of deze speler nog niet geregistreerd is
+                        var bestaandRegistratie = db.Registrations.FirstOrDefault(r => r.PlayerId == bestaandeSpeler.Id && r.TournamentId == bestaandTornooi.Id);
+                        if (bestaandRegistratie != null)
+                        {
+                            MessageBox.Show("Deze speler is al geregisteerd voor dit tornooi");
+                            return;
+                        }
+                        // Kijken of de max inschrijvingen nog niet overschreden zijn
+                        var inschrijvingen = GetAllRegistrations(tornooi);
+                        if (inschrijvingen.Count >= tornooi.MaxInschrijvingen)
+                        {
+                            MessageBox.Show("Het maximum inschrijvingen voor dit tornooi is reeds bereikt");
+                            return;
+                        }
+                        // Speler inschrijven voor tornooi
+                        db.Registrations.Add(new Registration
+                        {
+                            PlayerId = bestaandeSpeler.Id,
+                            TournamentId = bestaandTornooi.Id
+                        });
+                        MessageBox.Show($"De speler {speler.VoornaamNaam} werd ingeschreven voor het tornooi {tornooi.Naam} {tornooi.Jaargang}");
+                        db.SaveChanges();
+                    }
+                }
+            }
+            catch
+            {
+                throw new InvalidOperationException("Deze speler kon niet geregistreerd worden.");
+            }
+        }
+        public static void EndPlayerRegistration(Tournament tornooi, Player speler)
+        {
+            try
+            {
+                using (var db = new DbDartsmanagerContext())
+                {
+                    var bestaandRegistratie = db.Registrations.FirstOrDefault(r => r.PlayerId == speler.Id && r.TournamentId == tornooi.Id);
+                    if (bestaandRegistratie != null)
+                    {
+                        MessageBoxResult result = MessageBox.Show($"Bent u zeker dat u deze inschrijving wenst te verwijderen?",
+                                                  "Bevestig verwijdering",
+                                                  MessageBoxButton.YesNo,
+                                                  MessageBoxImage.Question);
+                        if (result == MessageBoxResult.Yes)
+                        {
+                            RemoveRegistration(bestaandRegistratie);
+                            MessageBox.Show($"De speler {speler.VoornaamNaam} werd uitgeschreven voor het tornooi {tornooi.Naam} {tornooi.Jaargang}");
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show($"De speler {speler.VoornaamNaam} was nog niet ingeschreven voor het tornooi {tornooi.Naam} {tornooi.Jaargang}");
+                    }
+                }
+            }
+            catch
+            {
+                throw new InvalidOperationException("Deze inschrijving kan niet verwijderd worden.");
+            }
+        }
+        public static void RemoveRegistration(Registration inschrijving)
+        {
+            try
+            {
+                using (var db = new DbDartsmanagerContext())
+                {
+                    var bestaandRegistratie = db.Registrations.FirstOrDefault(r => r.Id == inschrijving.Id);
+                    if (bestaandRegistratie != null)
+                    {
+                        db.Registrations.Remove(bestaandRegistratie);                        
+                        db.SaveChanges();
+                    }
+                }
+            }
+            catch
+            {
+                throw new InvalidOperationException("Deze inschrijving kan niet worden verwijderd omdat hij nog gekoppeld is aan andere gegevens.");
             }
         }
 
@@ -202,8 +323,10 @@ namespace Dartsmanager.Services
             }
             catch
             {
-                throw new InvalidOperationException("Deze status kan niet worden verwijderd omdat hij nog gekoppeld is aan een project of andere gegevens.");
+                throw new InvalidOperationException("Deze status kan niet worden verwijderd omdat hij nog gekoppeld is aan andere gegevens.");
             }
         }
+
+        
     }
 }

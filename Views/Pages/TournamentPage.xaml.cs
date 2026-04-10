@@ -59,6 +59,15 @@ namespace Dartsmanager.Views.Pages
                     CB_Statuses.SelectedValue = _actief_tornooi.StatusId;
                 }
                 TB_Ronde.Text = _actief_tornooi.ActieveRonde.ToString();
+                // Playercontrol tonen
+                if (_actieve_gebruiker != null)
+                {
+                    Grid_PlayerControl.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    Grid_PlayerControl.Visibility = Visibility.Collapsed;
+                }
                 // Beschikbaarheid tot aanpassen enkel voor een admin
                 if (_actieve_gebruiker != null && _actieve_gebruiker.IsAdmin == true)
                 {
@@ -69,7 +78,9 @@ namespace Dartsmanager.Views.Pages
                     TB_Datum.IsReadOnly = false;
                     TB_Max_Inschrijvingen.IsReadOnly = false;
                     CB_Statuses.IsEnabled = true;
-                    BT_Create_Adress.Visibility = Visibility.Visible;                    
+                    BT_Create_Adress.Visibility = Visibility.Visible;
+                    // Menu voor admincontrol zichtbaar maken
+                    Grid_AdminControl.Visibility = Visibility.Visible;
                 }
                 else
                 {
@@ -81,6 +92,8 @@ namespace Dartsmanager.Views.Pages
                     TB_Max_Inschrijvingen.IsReadOnly = true;
                     CB_Statuses.IsEnabled = false;
                     BT_Create_Adress.Visibility = Visibility.Collapsed;
+                    // Menu voor admincontrol onzichtbaar maken
+                    Grid_AdminControl.Visibility = Visibility.Collapsed;
                 }
             }
         }
@@ -153,5 +166,111 @@ namespace Dartsmanager.Views.Pages
             AdresScherm.ShowDialog();
             BindData();
         }
+
+        // PLAYERCONTROL
+        private void BT_Inschrijven_Click(object sender, RoutedEventArgs e)
+        {
+            if (_actief_tornooi == null)
+            {
+                MessageBox.Show("Er is geen actief tornooi om in te schrijven.");
+                return;
+            }
+            if (_actieve_gebruiker == null || _actieve_gebruiker.PlayerId == null || _actieve_gebruiker.PlayerIdBevestigd == false)
+            {
+                MessageBox.Show("Er is geen actieve bevestigde speler om in te schrijven.");
+                return;
+            }
+            var speler = PlayerService.GetPlayerFromId((int)_actieve_gebruiker.PlayerId);
+            if (speler != null)
+            {
+                TournamentService.RegisterPlayer(_actief_tornooi, speler);
+                Frame_Tournament.Navigate(new PlayerOverview(_actieve_gebruiker, Frame_Tournament, _actief_tornooi));
+            }
+        }
+        private void BT_Uitschrijven_Click(object sender, RoutedEventArgs e)
+        {
+            if (_actief_tornooi == null)
+            {
+                MessageBox.Show("Er is geen actief tornooi om in te schrijven.");
+                return;
+            }
+            if (_actieve_gebruiker == null || _actieve_gebruiker.PlayerId == null || _actieve_gebruiker.PlayerIdBevestigd == false)
+            {
+                MessageBox.Show("Er is geen actieve bevestigde speler om uit te schrijven.");
+                return;
+            }
+            var speler = PlayerService.GetPlayerFromId((int)_actieve_gebruiker.PlayerId);
+            if (speler != null)
+            {
+                TournamentService.EndPlayerRegistration(_actief_tornooi, speler);
+                Frame_Tournament.Navigate(new PlayerOverview(_actieve_gebruiker, Frame_Tournament, _actief_tornooi));
+            }
+        }
+
+        // ADMINCONTROL
+        private void BT_Speler_Inschrijven_Click(object sender, RoutedEventArgs e)
+        {
+            var SpelerSelectie = new PlayerSelector();
+            SpelerSelectie.ShowDialog();
+            if (SpelerSelectie._geselecteerde_speler != null)
+            {
+                if (_actief_tornooi == null)
+                {
+                    MessageBox.Show("Er is geen actief tornooi geselecteerd.");
+                    return;
+                }
+                TournamentService.RegisterPlayer(_actief_tornooi, SpelerSelectie._geselecteerde_speler);
+                Frame_Tournament.Navigate(new PlayerOverview(_actieve_gebruiker, Frame_Tournament, _actief_tornooi));
+            }
+        }
+        private void BT_Speler_Uitschrijven_Click(object sender, RoutedEventArgs e)
+        {
+            var SpelerSelectie = new PlayerSelector();
+            SpelerSelectie.ShowDialog();
+            if (SpelerSelectie._geselecteerde_speler != null)
+            {
+                if (_actief_tornooi == null)
+                {
+                    MessageBox.Show("Er is geen actief tornooi geselecteerd.");
+                    return;
+                }
+                TournamentService.EndPlayerRegistration(_actief_tornooi, SpelerSelectie._geselecteerde_speler);
+                Frame_Tournament.Navigate(new PlayerOverview(_actieve_gebruiker, Frame_Tournament, _actief_tornooi));
+            }
+        }
+        private void BT_Tournament_Wedstrijdschema_Click(object sender, RoutedEventArgs e)
+        {
+            if (_actief_tornooi == null)
+            {
+                MessageBox.Show("Er is geen actief tornooi geselecteerd.");
+                return;
+            }
+            TournamentService.CreateGameSchedule(_actief_tornooi);
+        }
+
+        // TORNOOI SUBMENU
+        private void BT_Tournament_Spelers_Click(object sender, RoutedEventArgs e)
+        {
+            Frame_Tournament.Navigate(new PlayerOverview(_actieve_gebruiker, Frame_Tournament, _actief_tornooi));
+        }
+        private void BT_Tournament_Groepsfase_Click(object sender, RoutedEventArgs e)
+        {
+            if (_actief_tornooi != null)
+            {
+                //Frame_Tournament.Navigate(new PlayerPage(_actieve_gebruiker, speler, Frame_Player));
+            }
+        }
+
+        private void BT_Tournament_KOfase_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BT_Tournament_Wedstrijden_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        
     }
 }

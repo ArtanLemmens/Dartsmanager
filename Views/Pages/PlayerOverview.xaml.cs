@@ -3,6 +3,7 @@ using Dartsmanager.Services;
 using Dartsmanager.Views.Windows;
 using System;
 using System.Collections.Generic;
+using System.IO.Packaging;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,22 +24,23 @@ namespace Dartsmanager.Views.Pages
     {
         private User? _actieve_gebruiker = null;
         private Frame _frame;
+        private Tournament? _actief_tornooi = null;
 
-        public PlayerOverview(User? actieve_gebruiker, Frame frame)
+        public PlayerOverview(User? actieve_gebruiker, Frame frame, Tournament? actief_tornooi = null)
         {
             InitializeComponent();
             _actieve_gebruiker = actieve_gebruiker;
             _frame = frame;
+            _actief_tornooi = actief_tornooi;
             GetPlayers();
         }
 
         private void GetPlayers()
         {
-            var spelers = PlayerService.GetAll();
-            if (spelers.Count > 0)
-            {
-                LB_Spelers.ItemsSource = spelers;
-            }
+            List<Player> spelers;
+            spelers = PlayerService.GetAll(_actief_tornooi);
+            LB_Spelers.ItemsSource = spelers;
+            LB_Spelers.Items.Refresh();
         }
 
         private void FilterPlayers()
@@ -52,12 +54,12 @@ namespace Dartsmanager.Views.Pages
             // Bij een lege waarde of "zoek speler" mogen al de spelers getoond worden
             if (string.IsNullOrWhiteSpace(filter) || filter == "Zoek speler...")
             {
-                spelers = PlayerService.GetAll();                
+                spelers = PlayerService.GetAll(_actief_tornooi);
             }
             else
             {
                 // filteren op de gefilterde waarde
-                spelers = PlayerService.GetPlayersFromNameFilter(filter);
+                spelers = PlayerService.GetPlayersFromNameFilter(filter, _actief_tornooi);
             }            
             LB_Spelers.ItemsSource = spelers;
             LB_Spelers.Items.Refresh();
@@ -85,6 +87,11 @@ namespace Dartsmanager.Views.Pages
 
         private void BT_Create_Player_Click(object sender, RoutedEventArgs e)
         {
+            if (_actieve_gebruiker == null)
+            {
+                MessageBox.Show("Login in om de speler te kunnen aanmaken");
+                return;
+            }
             // Toon spelerscherm 
             var SpelerScherm = new PlayerWindow();
             SpelerScherm.ShowDialog();

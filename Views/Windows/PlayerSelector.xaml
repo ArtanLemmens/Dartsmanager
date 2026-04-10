@@ -1,0 +1,38 @@
+﻿<Window x:Class="Dartsmanager.Views.Windows.PlayerSelector"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Dartsmanager.Views.Windows"
+        mc:Ignorable="d"
+        Title="PlayerSelector" Height="300" Width="300" WindowStartupLocation="CenterScreen">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto "/>            
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Selecteer speler" Style="{StaticResource TextBlock_H1}" HorizontalAlignment="Center"/>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left">
+            <TextBlock Text="Speler" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0" />
+            <Button x:Name="BT_Create_Speler" Content="Creëer" Click="BT_Create_Speler_Click" Style="{StaticResource Button_B3}" Margin="5,5,5,0"/>
+        </StackPanel>
+
+        <ComboBox Grid.Row="2" x:Name="CB_Spelers" Style="{StaticResource ComboBox_C1}" DisplayMemberPath="VoornaamNaam" SelectedValuePath="Id"/>
+
+        <Button Grid.Row="3" x:Name="BT_Select" Content="Selecteer" Click="BT_Select_Click" 
+            Style="{StaticResource Button_B2}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,20,5,5"/>
+
+        <Button Grid.Row="4" x:Name="BT_Cancel" Content="Cancel" Click="BT_Cancel_Click" 
+            Style="{StaticResource Button_B3}" Foreground="Red"/>
+
+    </Grid>
+</Window>

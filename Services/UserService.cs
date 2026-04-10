@@ -168,7 +168,7 @@ namespace Dartsmanager.Services
             }
             catch
             {
-                throw new InvalidOperationException("Deze gebruiker kan niet worden verwijderd omdat hij nog gekoppeld is aan een project of andere gegevens.");
+                throw new InvalidOperationException("Deze gebruiker kan niet worden verwijderd omdat hij nog gekoppeld is aan andere gegevens.");
             }
         }
 

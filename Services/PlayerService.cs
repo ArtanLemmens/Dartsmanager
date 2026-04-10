@@ -10,16 +10,25 @@ namespace Dartsmanager.Services
 {
     public class PlayerService
     {
-        public static List<Player> GetAll()
+        public static List<Player> GetAll(Tournament? tornooi = null)
         {
             using (var db = new DbDartsmanagerContext())
             {
-                var spelers = db.Players
+                if (tornooi == null)
+                {
+                    return db.Players
+                        .Include(p => p.Adres)
+                        .Include(p => p.User)
+                        .ToList();
+                }
+                else
+                {
+                    return db.Players
                     .Include(p => p.Adres)
                     .Include(p => p.User)
+                    .Where(p => db.Registrations.Any(r => r.TournamentId == tornooi.Id && r.PlayerId == p.Id))
                     .ToList();
-
-                return spelers;
+                }
             }
         }
         public static Player? GetPlayerFromId(int id)
@@ -38,11 +47,23 @@ namespace Dartsmanager.Services
                 return speler;
             }
         }
-        public static List<Player> GetPlayersFromNameFilter(string filter)
+
+        public static List<Player> GetPlayersFromNameFilter(string filter, Tournament? tornooi = null)
         {
             using (var db = new DbDartsmanagerContext())
             {
-                return db.Players.Where(p => p.Voornaam.Contains(filter) || p.Naam.Contains(filter)).ToList();
+                if (tornooi == null)
+                {
+                    return db.Players.Where(p => p.Voornaam.Contains(filter) || p.Naam.Contains(filter)).ToList();
+                }
+                else
+                {
+                    return db.Players
+                    .Include(p => p.Adres)
+                    .Include(p => p.User)
+                    .Where(p => db.Registrations.Any(r => r.TournamentId == tornooi.Id && r.PlayerId == p.Id) && (p.Voornaam.Contains(filter) || p.Naam.Contains(filter)))
+                    .ToList();
+                }
             }
         }
         public static bool CheckExistingName(string naam, string voornaam)
@@ -161,7 +182,7 @@ namespace Dartsmanager.Services
             }
             catch
             {
-                throw new InvalidOperationException("Deze speler kan niet worden verwijderd omdat het nog gekoppeld is aan een project of andere gegevens.");
+                throw new InvalidOperationException("Deze speler kan niet worden verwijderd omdat het nog gekoppeld is aan andere gegevens.");
             }
         }
     }
