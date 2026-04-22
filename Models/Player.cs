@@ -31,8 +31,6 @@ public partial class Player
 
     public virtual ICollection<Game> GamePlayer2s { get; set; } = new List<Game>();
 
-    public IEnumerable<Game> Games => GamePlayer1s.Concat(GamePlayer2s).Distinct();
-
     public virtual ICollection<GameScore> GameScores { get; set; } = new List<GameScore>();
 
     public virtual ICollection<GroupPlayer> GroupPlayers { get; set; } = new List<GroupPlayer>();

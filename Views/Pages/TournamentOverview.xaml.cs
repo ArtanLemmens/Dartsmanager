@@ -86,6 +86,10 @@ namespace Dartsmanager.Views.Pages
 
         private void BT_Create_Tournament_Click(object sender, RoutedEventArgs e)
         {
+            if (_actieve_gebruiker == null || _actieve_gebruiker.IsAdmin == false)
+            {
+                MessageBox.Show("Log in als admin om een tornooi aan te maken"); return;
+            }
             // Toon tornooischerm 
             var TornooiScherm = new TournamentWindow();
             TornooiScherm.ShowDialog();

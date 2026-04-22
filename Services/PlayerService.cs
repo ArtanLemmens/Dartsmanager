@@ -148,6 +148,33 @@ namespace Dartsmanager.Services
                 throw new InvalidOperationException("Kon de speler niet toevoegen. Controleer of de naam uniek is of de databaseverbinding juist is.");
             }
         }
+        public static void AddDummy(int dummy_nummer)
+        {
+            try
+            {
+                using (var db = new DbDartsmanagerContext())
+                {
+                    // Dummy speler aanmaken
+                    Player nieuwe_speler = new Player
+                    {
+                        Voornaam = "Dummy",
+                        Naam = $"{dummy_nummer}",
+                        IsDummy = 1
+                    };
+                    // Kijken of deze al bestaat
+                    if (CheckExistingName(nieuwe_speler.Naam, nieuwe_speler.Voornaam) == true)
+                    {
+                        return;
+                    }
+                    db.Players.Add(nieuwe_speler);
+                    db.SaveChanges();
+                }
+            }
+            catch
+            {
+                throw new InvalidOperationException("Kon de dummy  niet toevoegen. Controleer of de naam uniek is of de databaseverbinding juist is.");
+            }
+        }
         public static void Remove(Player speler)
         {
             try

@@ -20,6 +20,21 @@ namespace Dartsmanager.Services
                 return tornooien;
             }
         }
+        public static int? GetStatusId(Tournament? tornooi)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                if (tornooi != null)
+                {
+                    var gezocht_tornooi = db.Tournaments.FirstOrDefault(t => t.Id == tornooi.Id);
+                    if (gezocht_tornooi != null)
+                    {
+                        return gezocht_tornooi.StatusId;                        
+                    }
+                }
+                return null;
+            }
+        }
         public static List<Tournament> GetTournamentsFromNameFilter(string filter)
         {
             using (var db = new DbDartsmanagerContext())
@@ -142,8 +157,100 @@ namespace Dartsmanager.Services
                 throw new InvalidOperationException("Dit tornooi kan niet worden verwijderd omdat hij nog gekoppeld is aan andere gegevens.");
             }
         }
+        public static Status? Start(Tournament tornooi)
+        {
+            try
+            {
+                using (var db = new DbDartsmanagerContext())
+                {
+                    // Enkel starten indien nog niet gestart werd
+                    if ((tornooi.StatusId != null && tornooi.Status != null && tornooi.Status.Naam == "Niet gestart") || tornooi.Status == null)
+                    {
+                        // kijken of max inschrijvingen werd bereikt en vragen of er met dummies gespeeld wilt worden
+                        if (tornooi.MaxInschrijvingen > GetAllRegistrations(tornooi).Count)
+                        {
+                            MessageBoxResult result = MessageBox.Show($"U bent nog niet aan het max aantal inschrijvingen, wilt u alsnog starten met dummy spelers?",
+                                                          "Bevestig start",
+                                                          MessageBoxButton.YesNo,
+                                                          MessageBoxImage.Question);
+                            if (result == MessageBoxResult.No)
+                            {
+                                return tornooi.Status;
+                            }
+                        }
+                        // De status met naam "Gestart" ophalen en wijzigen in tornooi
+                        var status = db.Statuses.FirstOrDefault(s => s.Naam == "Gestart");
+                        var bestaandTornooi = db.Tournaments.FirstOrDefault(t => t.Id == tornooi.Id);
+                        if (status != null && bestaandTornooi != null )
+                        {
+                            bestaandTornooi.StatusId = status.Id;
+                            db.SaveChanges();
+                            MessageBox.Show("Het tornooi is gestart.");
+                            return status;
+                        }
 
-        public static void CreateGameSchedule(Tournament tornooi)
+                    }
+                    else
+                    {
+                        MessageBox.Show("Dit tornooi kan niet langer gestart worden");
+                    }
+                    return tornooi.Status;
+                }
+            }
+            catch
+            {
+                throw new InvalidOperationException("Kon het tornooi niet toevoegen. Controleer of de naam uniek is of de databaseverbinding juist is.");
+            }
+        }
+        public static Status? Open(Tournament tornooi)
+        {
+            try
+            {
+                using (var db = new DbDartsmanagerContext())
+                {
+                    // Enkel openen indien gestart werd en nog geen wedstrijdschema gemaakt is
+                    if (tornooi.Status != null && tornooi.Status.Naam == "Gestart")
+                    {
+                        var groepen = db.Groups.Where(g => g.TournamentId  == tornooi.Id).ToList();
+                        if (groepen != null && groepen.Count > 0)
+                        {
+                            MessageBox.Show("Er zijn al groepen gecreërd, u kan het tornooi niet meer open zetten.");
+                            return tornooi.Status;
+                        }
+                        // De status met naam "Niet gestart" ophalen en wijzigen in tornooi
+                        var status = db.Statuses.FirstOrDefault(s => s.Naam == "Niet gestart");
+                        var bestaandTornooi = db.Tournaments.FirstOrDefault(t => t.Id == tornooi.Id);
+                        if (status != null && bestaandTornooi != null)
+                        {
+                            bestaandTornooi.StatusId = status.Id;
+                            db.SaveChanges();
+                            MessageBox.Show("Het tornooi is terug open gezet.");
+                            return status;
+                        }
+
+                    }
+                    else
+                    {
+                        MessageBox.Show("Dit tornooi kan niet langer open gezet worden");
+                    }
+                    return tornooi.Status;
+                }
+            }
+            catch
+            {
+                throw new InvalidOperationException("Kon het tornooi niet open zetten. Controleer of de naam uniek is of de databaseverbinding juist is.");
+            }
+        }
+
+        public static List<Group> GetAllGroups(Tournament tornooi)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                var groepen = db.Groups.Where(g => g.TournamentId == tornooi.Id).ToList();
+                return groepen;
+            }
+        }
+        public static void CreateGroups(Tournament tornooi)
         {
             try
             {
@@ -152,16 +259,237 @@ namespace Dartsmanager.Services
                     var bestaandTornooi = db.Tournaments.FirstOrDefault(t => t.Id == tornooi.Id);
                     if (bestaandTornooi != null)
                     {
-                       // Aantal inschrijvingen opzoeken
+                        // Kijken of er al groepen zijn gemaakt, anders niets bijmaken
+                        var groepen = GetAllGroups(tornooi);
+                        if (groepen.Count > 0)
+                        {
+                            MessageBox.Show("Er zijn al groepen aangemaakt in deze wedstrijd!");
+                            return;
+                        }
 
 
+                        // Aantal speler inschrijvingen opzoeken
+                        var inschrijvingen = GetAllPlayerRegistrations(tornooi);
+                        if (inschrijvingen != null && tornooi.MaxInschrijvingen != null)
+                        {
+                            if (inschrijvingen.Count == 0)
+                            {
+                                MessageBox.Show("Er zijn geen inschrijvingen geregistreerd!");
+                                return;
+                            }
+                            // Groepen aanmaken
+                            int aantal_groepen = 0;
+                            if ((int)tornooi.MaxInschrijvingen % 4 == 0)
+                            {
+                                aantal_groepen = (int)tornooi.MaxInschrijvingen / 4;
+                                for (int i = 0; i < aantal_groepen; i++)
+                                {
+                                    CreateGroup(tornooi, i + 1);
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show("Het max aantal inschrijvingen moet deelbaar zijn door 4!");
+                                return;
+                            }
+
+                            // Kijken of er dummies nodig zijn
+                            var inschrijvingen_dummy = GetAllDummyRegistrations(tornooi);
+                            int aantal_dummy = (int)tornooi.MaxInschrijvingen - inschrijvingen.Count - inschrijvingen_dummy.Count;
+                            if (aantal_dummy > 0)
+                            {
+                                // Dummies maken
+                                for (int i = 0; i < aantal_dummy; i++)
+                                {
+                                    PlayerService.AddDummy(i + 1);
+                                }
+                                // Dummies inschrijven voor het tornooi
+                                for (int i = 0; i < aantal_dummy; i++)
+                                {
+                                    var dummy = db.Players.FirstOrDefault(p => p.Voornaam == "Dummy" && p.Naam == $"{i + 1}");
+                                    if (dummy != null)
+                                    {
+                                        RegisterPlayer(tornooi, dummy);
+                                    }
+                                }
+                            }
+
+                            // Eerst spelers evenredig verdelen in groepen
+                            // Random volgorde maken
+                            var random = new Random();
+                            for (int i = inschrijvingen.Count - 1; i > 0; i--)
+                            {
+                                int j = random.Next(i + 1);
+                                var temp = inschrijvingen[i];
+                                inschrijvingen[i] = inschrijvingen[j];
+                                inschrijvingen[j] = temp;
+                            }
+                            // Groepen en spelers ophalen
+                            groepen = GetAllGroups(tornooi);
+                            var spelers = db.Players.ToList();
+                            // Al de spelers inschrijvingen doorlopen
+                            for (int i = 0; i < inschrijvingen.Count; i++)
+                            {
+                                // De rest bij de deling door het aantal groepen (=totaal aantal/4) bepaalt de groepsnummer (rest + 1)
+                                int groepIndex = i % aantal_groepen + 1;
+
+                                var groep = groepen.FirstOrDefault(g => g.GroepNummer == groepIndex);
+                                if (groep != null)
+                                {
+                                    var speler = spelers.FirstOrDefault(p => p.Id == inschrijvingen[i].PlayerId);
+                                    if (speler != null)
+                                    {
+                                        AddPlayerToGroup(groep, speler);
+                                    }
+                                    
+                                }
+                            }
+
+                            // Dan dummies verdelen in groepen
+                            inschrijvingen_dummy.Clear();
+                            inschrijvingen_dummy = GetAllDummyRegistrations(tornooi);
+                            int dummyIndex = 0;
+                            for (int i = 0; i < groepen.Count; i++)
+                            {
+                                var groep = groepen[i];
+
+                                // Tel hoeveel spelers er al in zitten en eventuele vrije plaatsen tellen
+                                var huidigeSpelers = db.GroupPlayers.Where(gp => gp.GroupId == groep.Id).Count();
+                                int vrijePlaatsen = 4 - huidigeSpelers;
+
+                                for (int j = 0; j < vrijePlaatsen && dummyIndex < inschrijvingen_dummy.Count; j++)
+                                {
+                                    var dummy = db.Players.FirstOrDefault(p => p.Id == inschrijvingen_dummy[dummyIndex].PlayerId);
+                                    if (dummy != null)
+                                    {
+                                        AddPlayerToGroup(groep, dummy);
+                                    }
+                                    dummyIndex++;
+                                }
+                            }
+
+                            db.SaveChanges();
+                            MessageBox.Show("Groepen aangemaakt");
+                        }
+
+                       
+                    }
+                }
+            }
+            catch
+            {
+                throw new InvalidOperationException("Kon de groepen niet aanmaken.");
+            }
+        }
+        public static void CreateWedstrijdSchema(Tournament tornooi)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                var groupen = db.Groups.Where(g => g.TournamentId == tornooi.Id).ToList();
+
+                foreach (var groep in groupen)
+                {
+                    // Spelerid's selecteren van al de spelers in de groep
+                    var speler_Ids = db.GroupPlayers.Where(gp => gp.GroupId == groep.Id).Select(gp => gp.PlayerId).ToList();
+                    // elke speler tegen elke andere speler
+                    for (int i = 0; i < speler_Ids.Count; i++)
+                    {
+                        for (int j = i + 1; j < speler_Ids.Count; j++)
+                        {
+                            var wedstrijd = new Game
+                            {
+                                TournamentId = tornooi.Id,
+                                GroupId = groep.Id,
+                                Player1Id = speler_Ids[i],
+                                Player2Id = speler_Ids[j],
+                                Ronde = 1
+                            };
+                            GameService.Add(wedstrijd);
+                        }
+                    }
+                }
+
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                    throw;
+                }
+                MessageBox.Show("Wedstrijdschema aangemaakt");
+            }
+        }
+
+        // Status
+        public static List<Status> GetAllStatus()
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                var statuses = db.Statuses.ToList();
+                return statuses;
+            }
+        }
+        public static Status? GetStatusByName(string naam)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                var status = db.Statuses.FirstOrDefault(s => s.Naam == naam);
+                return status;
+            }
+        }
+        public static void UpdateStatus(Status status)
+        {
+            try
+            {
+                using (var db = new DbDartsmanagerContext())
+                {
+                    var bestaandeStatus = db.Statuses.FirstOrDefault(s => s.Id == status.Id);
+                    if (bestaandeStatus != null)
+                    {
+                        bestaandeStatus.Naam = status.Naam;
                         db.SaveChanges();
                     }
                 }
             }
             catch
             {
-                throw new InvalidOperationException("Kon het werdstrijdschema niet aanmaken.");
+                throw new InvalidOperationException("De wijzigingen konden niet worden opgeslagen. Controleer of de status nog wordt gebruikt in andere gegevens.");
+            }
+        }
+        public static void AddStatus(Status status)
+        {
+            try
+            {
+                using (var db = new DbDartsmanagerContext())
+                {
+                    db.Statuses.Add(status);
+                    db.SaveChanges();
+                }
+            }
+            catch
+            {
+                throw new InvalidOperationException("Kon de status niet toevoegen. Controleer of de naam uniek is of de databaseverbinding juist is.");
+            }
+        }
+        public static void RemoveStatus(Status status)
+        {
+            try
+            {
+                using (var db = new DbDartsmanagerContext())
+                {
+                    var bestaandeStatus = db.Statuses.FirstOrDefault(s => s.Id == status.Id);
+                    if (bestaandeStatus != null)
+                    {
+                        db.Statuses.Remove(bestaandeStatus);
+                        db.SaveChanges();
+                    }
+                }
+            }
+            catch
+            {
+                throw new InvalidOperationException("Deze status kan niet worden verwijderd omdat hij nog gekoppeld is aan andere gegevens.");
             }
         }
 
@@ -170,7 +498,23 @@ namespace Dartsmanager.Services
         {
             using (var db = new DbDartsmanagerContext())
             {
-                var inschrijvingen = db.Registrations.Where(r => r.TournamentId == tornooi.Id).ToList();
+                var inschrijvingen = db.Registrations.Where(r => r.TournamentId == tornooi.Id).Include(r => r.Player).ToList();
+                return inschrijvingen;
+            }
+        }
+        public static List<Registration> GetAllPlayerRegistrations(Tournament tornooi)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                var inschrijvingen = db.Registrations.Where(r => r.TournamentId == tornooi.Id && r.Player.IsDummy != 1).Include(r => r.Player).ToList();
+                return inschrijvingen;
+            }
+        }
+        public static List<Registration> GetAllDummyRegistrations(Tournament tornooi)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                var inschrijvingen = db.Registrations.Where(r => r.TournamentId == tornooi.Id && r.Player.IsDummy == 1).Include(r => r.Player).ToList();
                 return inschrijvingen;
             }
         }
@@ -186,9 +530,12 @@ namespace Dartsmanager.Services
                     {
                         // Kijken of deze speler nog niet geregistreerd is
                         var bestaandRegistratie = db.Registrations.FirstOrDefault(r => r.PlayerId == bestaandeSpeler.Id && r.TournamentId == bestaandTornooi.Id);
-                        if (bestaandRegistratie != null)
+                        if (bestaandRegistratie != null )
                         {
-                            MessageBox.Show("Deze speler is al geregisteerd voor dit tornooi");
+                            if (bestaandRegistratie.Player.IsDummy != 1)
+                            {
+                                MessageBox.Show("Deze speler is al geregisteerd voor dit tornooi");
+                            }
                             return;
                         }
                         // Kijken of de max inschrijvingen nog niet overschreden zijn
@@ -264,68 +611,51 @@ namespace Dartsmanager.Services
             }
         }
 
-        // Status
-        public static List<Status> GetAllStatus()
-        {
-            using (var db = new DbDartsmanagerContext())
-            {
-                var statuses = db.Statuses.ToList();
-                return statuses;
-            }
-        }
-        public static void UpdateStatus(Status status)
+        
+        // Groepen
+        public static void CreateGroup(Tournament tornooi, int groepnummer)
         {
             try
             {
                 using (var db = new DbDartsmanagerContext())
                 {
-                    var bestaandeStatus = db.Statuses.FirstOrDefault(s => s.Id == status.Id);
-                    if (bestaandeStatus != null)
+                    Group groep = new Group
                     {
-                        bestaandeStatus.Naam = status.Naam;
-                        db.SaveChanges();
-                    }
-                }
-            }
-            catch
-            {
-                throw new InvalidOperationException("De wijzigingen konden niet worden opgeslagen. Controleer of de status nog wordt gebruikt in andere gegevens.");
-            }
-        }
-        public static void AddStatus(Status status)
-        {
-            try
-            {
-                using (var db = new DbDartsmanagerContext())
-                {
-                    db.Statuses.Add(status);
+                        TournamentId = tornooi.Id,
+                        GroepNummer = groepnummer
+                    };
+                    db.Groups.Add(groep);
                     db.SaveChanges();
                 }
             }
             catch
             {
-                throw new InvalidOperationException("Kon de status niet toevoegen. Controleer of de naam uniek is of de databaseverbinding juist is.");
+                throw new InvalidOperationException("Kon de groep niet toevoegen. Controleer of de naam uniek is of de databaseverbinding juist is.");
             }
         }
-        public static void RemoveStatus(Status status)
+        public static void AddPlayerToGroup(Group groep, Player speler)
         {
             try
             {
                 using (var db = new DbDartsmanagerContext())
                 {
-                    var bestaandeStatus = db.Statuses.FirstOrDefault(s => s.Id == status.Id);
-                    if (bestaandeStatus != null)
+                    GroupPlayer groepspeler = new GroupPlayer
                     {
-                        db.Statuses.Remove(bestaandeStatus);
-                        db.SaveChanges();
-                    }
+                        GroupId = groep.Id,
+                        PlayerId = speler.Id
+                    };
+                    db.GroupPlayers.Add(groepspeler);
+                    db.SaveChanges();
                 }
             }
             catch
             {
-                throw new InvalidOperationException("Deze status kan niet worden verwijderd omdat hij nog gekoppeld is aan andere gegevens.");
+                throw new InvalidOperationException("Kon de speler niet toevoegen aan de groep. Controleer of de naam uniek is of de databaseverbinding juist is.");
             }
         }
+
+
+        
 
         
     }

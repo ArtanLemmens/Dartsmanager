@@ -28,7 +28,6 @@ namespace Dartsmanager.Views.Pages
         public TournamentPage(User? actieve_gebruiker, Tournament tornooi, Frame frame)
         {
             InitializeComponent();
-            InitializeComponent();
             _actieve_gebruiker = actieve_gebruiker;
             _actief_tornooi = tornooi;
             _frame = frame;
@@ -40,9 +39,6 @@ namespace Dartsmanager.Views.Pages
             List<Adress> adressen = AdressService.GetAll();
             adressen.Add(new Adress { Straat = "-- Selecteer adres --" });
             CB_Adresses.ItemsSource = adressen;
-
-            List<Status> statuses = TournamentService.GetAllStatus();
-            CB_Statuses.ItemsSource = statuses;
         }
 
         private void LoadTournamentData()
@@ -53,13 +49,23 @@ namespace Dartsmanager.Views.Pages
                 TB_Jaargang.Text = _actief_tornooi.Jaargang.ToString();
                 CB_Adresses.SelectedValue = _actief_tornooi.AdresId;
                 TB_Datum.Text = _actief_tornooi.Datum;
+                // Inschrijvingen ophalen en tellen
+                List<Registration> inschrijvingen = TournamentService.GetAllRegistrations(_actief_tornooi);                
+                if (inschrijvingen.Count() > 0)
+                {
+                    TB_Inschrijvingen.Text = inschrijvingen.Count().ToString();
+                }
+                else
+                {
+                    TB_Inschrijvingen.Text = "0";
+                }
                 TB_Max_Inschrijvingen.Text = _actief_tornooi.MaxInschrijvingen.ToString();
                 if (_actief_tornooi.Status != null)
                 {
-                    CB_Statuses.SelectedValue = _actief_tornooi.StatusId;
+                    TB_Status.Text = _actief_tornooi.Status.Naam;
                 }
                 TB_Ronde.Text = _actief_tornooi.ActieveRonde.ToString();
-                // Playercontrol tonen
+                // Playercontrol tonen indien actieve gebruiker is ingelogd
                 if (_actieve_gebruiker != null)
                 {
                     Grid_PlayerControl.Visibility = Visibility.Visible;
@@ -77,7 +83,6 @@ namespace Dartsmanager.Views.Pages
                     CB_Adresses.IsEnabled = true;
                     TB_Datum.IsReadOnly = false;
                     TB_Max_Inschrijvingen.IsReadOnly = false;
-                    CB_Statuses.IsEnabled = true;
                     BT_Create_Adress.Visibility = Visibility.Visible;
                     // Menu voor admincontrol zichtbaar maken
                     Grid_AdminControl.Visibility = Visibility.Visible;
@@ -90,7 +95,6 @@ namespace Dartsmanager.Views.Pages
                     CB_Adresses.IsEnabled = false;
                     TB_Datum.IsReadOnly = true;
                     TB_Max_Inschrijvingen.IsReadOnly = true;
-                    CB_Statuses.IsEnabled = false;
                     BT_Create_Adress.Visibility = Visibility.Collapsed;
                     // Menu voor admincontrol onzichtbaar maken
                     Grid_AdminControl.Visibility = Visibility.Collapsed;
@@ -102,7 +106,6 @@ namespace Dartsmanager.Views.Pages
         {
             _frame.Navigate(new TournamentOverview(_actieve_gebruiker, _frame));
         }
-
         private void BT_Update_Tornooi_Click(object sender, RoutedEventArgs e)
         {
             if (_actieve_gebruiker != null && _actieve_gebruiker.IsAdmin == true )
@@ -112,6 +115,14 @@ namespace Dartsmanager.Views.Pages
                     MessageBox.Show("Er is geen actief tornooi te wijzigen.");
                     return;
                 }
+
+                // kijken of het tornooi nog niet gestart is
+                if (_actief_tornooi.Status != null && _actief_tornooi.Status.Naam != "Niet gestart")
+                {
+                    MessageBox.Show("U kan enkel een tornooi dat nog niet gestart is updaten.");
+                    return;
+                }
+
                 _actief_tornooi.Naam = TB_Naam.Text;
 
                 // Jaargang ophalen en kijken of het tornooi nog niet bestaat in deze jaargang
@@ -145,12 +156,6 @@ namespace Dartsmanager.Views.Pages
                 }
                 _actief_tornooi.MaxInschrijvingen = max_inschrijvingen;
 
-                // Status ophalen
-                if (CB_Statuses.SelectedItem is Status status)
-                {
-                    _actief_tornooi.StatusId = status.Id;
-                }
-
                 TournamentService.Update(_actief_tornooi);
                 MessageBox.Show("De tornooigegevens zijn aangepast");
             }
@@ -159,7 +164,6 @@ namespace Dartsmanager.Views.Pages
                 MessageBox.Show("U heeft geen rechten om deze tornooigegevens te wijzigen");
             }
         }
-
         private void BT_Create_Adress_Click(object sender, RoutedEventArgs e)
         {
             var AdresScherm = new AdressWindow();
@@ -225,7 +229,7 @@ namespace Dartsmanager.Views.Pages
         }
         private void BT_Speler_Uitschrijven_Click(object sender, RoutedEventArgs e)
         {
-            var SpelerSelectie = new PlayerSelector();
+            var SpelerSelectie = new PlayerSelector(_actief_tornooi);
             SpelerSelectie.ShowDialog();
             if (SpelerSelectie._geselecteerde_speler != null)
             {
@@ -238,6 +242,53 @@ namespace Dartsmanager.Views.Pages
                 Frame_Tournament.Navigate(new PlayerOverview(_actieve_gebruiker, Frame_Tournament, _actief_tornooi));
             }
         }
+        private void BT_Tournament_Start_Click(object sender, RoutedEventArgs e)
+        {
+            if (_actief_tornooi != null)
+            {
+                var status = TournamentService.Start(_actief_tornooi);
+                if (status != null)
+                {
+                    _actief_tornooi.Status = status;
+                    _actief_tornooi.StatusId = status.Id;
+                    LoadTournamentData();
+                }                
+
+            }
+        }
+        private void BT_Tournament_Open_Click(object sender, RoutedEventArgs e)
+        {
+            if (_actief_tornooi != null)
+            {
+                var status = TournamentService.Open(_actief_tornooi);
+                if (status != null)
+                {
+                    _actief_tornooi.Status = status;
+                    _actief_tornooi.StatusId = status.Id;
+                    // Dummyspelers terug verwijderen uit tornooi
+                    var inschrijvingen_dummy = TournamentService.GetAllDummyRegistrations(_actief_tornooi);
+                    foreach(var inschrijving in inschrijvingen_dummy)
+                    {
+                        TournamentService.RemoveRegistration(inschrijving);
+                    }
+                    LoadTournamentData();
+                }
+            }
+        }
+        private void BT_Tournament_Annuleer_Click(object sender, RoutedEventArgs e)
+        {
+            // Enkel annuleren wanneer het tornooi nog niet gestart is
+            if (_actief_tornooi != null && _actief_tornooi.Status != null && _actief_tornooi.Status.Naam == "Niet gestart")
+            {
+                // Tornooi verwijderen (registraties vezrdwijnen automatisch mee)
+                TournamentService.Remove(_actief_tornooi);
+                MessageBox.Show("Het tornooi is geannuleerd.");
+            }
+            else
+            {
+                MessageBox.Show("Dit tornooi kan niet langer geannuleerd worden");
+            }
+        }
         private void BT_Tournament_Wedstrijdschema_Click(object sender, RoutedEventArgs e)
         {
             if (_actief_tornooi == null)
@@ -245,7 +296,8 @@ namespace Dartsmanager.Views.Pages
                 MessageBox.Show("Er is geen actief tornooi geselecteerd.");
                 return;
             }
-            TournamentService.CreateGameSchedule(_actief_tornooi);
+            TournamentService.CreateGroups(_actief_tornooi);
+            TournamentService.CreateWedstrijdSchema(_actief_tornooi);
         }
 
         // TORNOOI SUBMENU

@@ -20,15 +20,25 @@ namespace Dartsmanager.Views.Windows
     public partial class PlayerSelector : Window
     {
         public Player? _geselecteerde_speler = null;
-        public PlayerSelector()
+
+        private Tournament? _geselecteerd_tornooi = null;
+
+        public PlayerSelector(Tournament? tornooi = null)
         {
             InitializeComponent();
+            _geselecteerd_tornooi = tornooi;
             BindData();
         }
 
         private void BindData()
         {
             List<Player> spelers = PlayerService.GetAll();
+            if (_geselecteerd_tornooi != null)
+            {
+                spelers.Clear();
+                spelers = PlayerService.GetAll(_geselecteerd_tornooi);
+            }
+            
             CB_Spelers.ItemsSource = spelers;
         }
         private void BT_Select_Click(object sender, RoutedEventArgs e)
