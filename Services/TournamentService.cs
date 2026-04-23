@@ -653,10 +653,54 @@ namespace Dartsmanager.Services
                 throw new InvalidOperationException("Kon de speler niet toevoegen aan de groep. Controleer of de naam uniek is of de databaseverbinding juist is.");
             }
         }
+        public static List<Player> GetAllPlayersFromGroup(Group groep)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                var spelers = db.GroupPlayers.Where(gp => gp.GroupId == groep.Id).Include(gp => gp.Player).Select(gp => gp.Player).ToList();
+                return spelers;
+            }
+        }
+        public static Group? GetGroupFromGame(Game wedstrijd)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                var groep = db.Groups.FirstOrDefault(g => g.Games.Contains(wedstrijd));
+                return groep;
+            }
+        }
+        public static int GetSetsPerGroupsPlayer(Group groep, Player speler)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                var sets = db.GameScores.Where(gs => gs.PlayerId == speler.Id && gs.Game.GroupId == groep.Id).Sum(gs => gs.SetsWon.GetValueOrDefault());
+                return sets;
+            }
+        }
+        public static int GetLegsPerGroupsPlayer(Group groep, Player speler)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                var legs = db.GameScores.Where(gs => gs.PlayerId == speler.Id && gs.Game.GroupId == groep.Id).Sum(gs => gs.LegsWon.GetValueOrDefault());
+                return legs;
+            }
+        }
+        public static int Get180PerGroupsPlayer(Group groep, Player speler)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                var aantal_180 = db.GameScores.Where(gs => gs.PlayerId == speler.Id && gs.Game.GroupId == groep.Id).Sum(gs => gs.Aantal180.GetValueOrDefault());
+                return aantal_180;
+            }
+        }
+        public static double GetGemiddeldePerGroupsPlayer(Group groep, Player speler)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                var gemiddelde = db.GameScores.Where(gs => gs.PlayerId == speler.Id && gs.Game.GroupId == groep.Id).Sum(gs => gs.Gemiddelde.GetValueOrDefault());
+                return gemiddelde;
+            }
+        }
 
-
-        
-
-        
     }
 }

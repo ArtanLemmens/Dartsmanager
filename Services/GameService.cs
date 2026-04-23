@@ -30,7 +30,7 @@ namespace Dartsmanager.Services
         {
             using (var db = new DbDartsmanagerContext())
             {
-                var wedstrijden = db.Games.Where(g => g.GroupId == groep.Id).ToList();
+                var wedstrijden = db.Games.Where(g => g.GroupId == groep.Id).Include(g => g.Player1).Include(g => g.Player2).ToList();
                 return wedstrijden;
             }
         }
@@ -95,6 +95,98 @@ namespace Dartsmanager.Services
             catch
             {
                 throw new InvalidOperationException("Kon de score niet toevoegen. Controleer of de naam uniek is of de databaseverbinding juist is.");
+            }
+        }
+        public static List<GameScore> GetAllScores(Group groep)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                var wedstrijdscores = db.GameScores.Where(gs => db.Games.Where(g => g.GroupId == groep.Id).Select(g => g.Id).Contains(gs.GameId)).ToList();
+                return wedstrijdscores;
+            }
+        }
+        public static int GetLegsFromGamescore(Game wedstrijd, Player speler)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                int legs = db.GameScores.Where(gs => gs.GameId == wedstrijd.Id && gs.PlayerId == speler.Id).Select(gs => gs.LegsWon.GetValueOrDefault()).FirstOrDefault();
+                return legs;
+            }
+        }
+        public static int Get180sFromGamescore(Game wedstrijd, Player speler)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                int aantal180 = db.GameScores.Where(gs => gs.GameId == wedstrijd.Id && gs.PlayerId == speler.Id).Select(gs => gs.Aantal180.GetValueOrDefault()).FirstOrDefault();
+                return aantal180;
+            }
+        }
+        public static double GetGemiddeldeFromGamescore(Game wedstrijd, Player speler)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                double gemiddelde = db.GameScores.Where(gs => gs.GameId == wedstrijd.Id && gs.PlayerId == speler.Id).Select(gs => gs.Gemiddelde.GetValueOrDefault()).FirstOrDefault();
+                return gemiddelde;
+            }
+        }
+        public static void UpdateLegsFromGamescore(Game wedstrijd, Player speler, int nieuwe_legs)
+        {
+            try
+            {
+                using (var db = new DbDartsmanagerContext())
+                {
+                    var gamescore = db.GameScores.FirstOrDefault(gs => gs.GameId == wedstrijd.Id && gs.PlayerId == speler.Id);
+                    if (gamescore != null)
+                    {
+                        gamescore.LegsWon = nieuwe_legs;
+                        db.SaveChanges();
+                    }
+                }
+            }
+            catch
+            {
+                throw new InvalidOperationException("Kon de score niet aanpassen. Controleer of de naam uniek is of de databaseverbinding juist is.");
+            }
+        }
+        public static void UpdateSetFromLegs(Game wedstrijd)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                var scores = db.GameScores.Where(gs => gs.GameId == wedstrijd.Id).ToList();
+ 
+                if (scores.Count != 2) 
+                {
+                    return;
+                }
+                var score_speler1 = scores[0];
+                var score_speler2 = scores[1];
+
+                int? legs1 = score_speler1.LegsWon;
+                int? legs2 = score_speler2.LegsWon;
+                if (legs1 != null && legs2 != null)
+                {
+                    // Reset sets
+                    score_speler1.SetsWon = 0;
+                    score_speler2.SetsWon = 0;
+
+                    // Kijken wie er wint
+                    if (legs1 >= 3 && legs1 > legs2)
+                    {
+                        score_speler1.SetsWon = 1;
+                    }
+                    else if (legs2 >= 3 && legs2 > legs1)
+                    {
+                        score_speler2.SetsWon = 1;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Beide spelers meten een verschillende score halen!");
+                    }
+
+                    db.SaveChanges();
+                }
+
+                
             }
         }
 

@@ -261,7 +261,7 @@ namespace Dartsmanager.Views.Pages
             if (_actief_tornooi != null)
             {
                 var status = TournamentService.Open(_actief_tornooi);
-                if (status != null)
+                if (status != null && status.Naam == "Niet gestart")
                 {
                     _actief_tornooi.Status = status;
                     _actief_tornooi.StatusId = status.Id;
@@ -309,7 +309,7 @@ namespace Dartsmanager.Views.Pages
         {
             if (_actief_tornooi != null)
             {
-                //Frame_Tournament.Navigate(new PlayerPage(_actieve_gebruiker, speler, Frame_Player));
+                Frame_Tournament.Navigate(new GroupStagePage(_actieve_gebruiker, _actief_tornooi, Frame_Tournament));
             }
         }
 
@@ -323,6 +323,9 @@ namespace Dartsmanager.Views.Pages
 
         }
 
-        
+        private void BT_Tournament_NextRound_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

@@ -89,9 +89,12 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0"  Text="Player control" Style="{StaticResource TextBlock_H2}" />
-            
-            <StackPanel Grid.Row="1" Orientation="Horizontal" Height="50">
+            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                <TextBlock Text="Player control" Style="{StaticResource TextBlock_H2}" />
+                <ToggleButton x:Name="Toggle_PlayerControl" Style="{StaticResource TB_PijlOB}" IsChecked="True"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Height="50" Visibility="{Binding IsChecked, ElementName=Toggle_PlayerControl, Converter={StaticResource BoolToVisibilityConverter}}">
                 <Button x:Name="BT_Inschrijven" Content="Schrijf in" Click="BT_Inschrijven_Click" Style="{StaticResource Button_B4}" />
                 <Button x:Name="BT_Uitschrijven" Content="Schrijf uit" Click="BT_Uitschrijven_Click" Style="{StaticResource Button_B4}" />
             </StackPanel>
@@ -106,9 +109,13 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0"  Text="Admin control" Style="{StaticResource TextBlock_H2}" />
             
-            <StackPanel Grid.Row="1" >
+            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                <TextBlock Grid.Row="0"  Text="Admin control" Style="{StaticResource TextBlock_H2}" />
+                <ToggleButton x:Name="Toggle_AdminControl" Style="{StaticResource TB_PijlOB}" IsChecked="True"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Visibility="{Binding IsChecked, ElementName=Toggle_AdminControl, Converter={StaticResource BoolToVisibilityConverter}}" >
                 <StackPanel Orientation="Horizontal" Height="50">
                     <Button x:Name="BT_Speler_Inschrijven" Content="Speler Inschrijven" Click="BT_Speler_Inschrijven_Click" Style="{StaticResource Button_B4}" />
                     <Button x:Name="BT_Speler_Uitschrijven" Content="Speler Uitschrijven" Click="BT_Speler_Uitschrijven_Click" Style="{StaticResource Button_B4}" />
@@ -118,6 +125,7 @@
                     <Button x:Name="BT_Tournament_Open" Content="Open tornooi" Click="BT_Tournament_Open_Click" Style="{StaticResource Button_B4}" />
                     <Button x:Name="BT_Tournament_Annuleer" Content="Annuleer tornooi" Click="BT_Tournament_Annuleer_Click" Style="{StaticResource Button_B4}" />
                     <Button x:Name="BT_Tournament_Wedstrijdschema" Content="Creëer wedstrijdschema" Click="BT_Tournament_Wedstrijdschema_Click" Style="{StaticResource Button_B4}" />
+                    <Button x:Name="BT_Tournament_NextRound" Content="Volgende ronde" Click="BT_Tournament_NextRound_Click" Style="{StaticResource Button_B4}" />
                 </StackPanel>
             </StackPanel>
             <Separator Grid.Row="2" Style="{StaticResource Separator_SP1}"/>
