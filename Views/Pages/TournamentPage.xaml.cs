@@ -299,6 +299,34 @@ namespace Dartsmanager.Views.Pages
             TournamentService.CreateGroups(_actief_tornooi);
             TournamentService.CreateWedstrijdSchema(_actief_tornooi);
         }
+        private void BT_Tournament_NextRound_Click(object sender, RoutedEventArgs e)
+        {
+            if (_actief_tornooi == null)
+            {
+                MessageBox.Show("Er is geen actief tornooi geselecteerd.");
+                return;
+            }
+            MessageBoxResult result = MessageBox.Show($"Bent u zeker dat u deze ronde wenst af te sluiten?",
+                                                  "Bevestig einde ronde",
+                                                  MessageBoxButton.YesNo,
+                                                  MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
+            {
+                var actieve_ronde = TournamentService.GetActieveRonde(_actief_tornooi);
+                if (actieve_ronde != null)
+                {
+                    // Onderscheid maken tussen einde groepsfase (ronde 1) en andere rondes
+                    if (actieve_ronde == 1)
+                    {
+                        TournamentService.EndGroupFase(_actief_tornooi);
+                    }
+                    else
+                    {
+                        TournamentService.NextRound(_actief_tornooi);
+                    }
+                }
+            }
+        }
 
         // TORNOOI SUBMENU
         private void BT_Tournament_Spelers_Click(object sender, RoutedEventArgs e)
@@ -323,9 +351,6 @@ namespace Dartsmanager.Views.Pages
 
         }
 
-        private void BT_Tournament_NextRound_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
+        
     }
 }

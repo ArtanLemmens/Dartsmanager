@@ -121,7 +121,8 @@ namespace Dartsmanager.Views.Windows
                 Jaargang = jaargang,
                 AdresId = adresId,
                 Datum = datum,
-                MaxInschrijvingen = max_inschrijvingen
+                MaxInschrijvingen = max_inschrijvingen,
+                ActieveRonde = 0                
             };
 
             TournamentService.Add(nieuw_tornooi);

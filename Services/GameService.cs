@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
+using System.Windows.Media;
 
 namespace Dartsmanager.Services
 {
@@ -23,6 +24,14 @@ namespace Dartsmanager.Services
             using (var db = new DbDartsmanagerContext())
             {
                 var wedstrijden = db.Games.Where(g => g.TournamentId == tornooi.Id).ToList();
+                return wedstrijden;
+            }
+        }
+        public static List<Game> GetAll(Tournament tornooi, int ronde)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                var wedstrijden = db.Games.Include(g => g.Tournament).Where(g => g.TournamentId == tornooi.Id && g.Tournament != null && g.Tournament.ActieveRonde == ronde).ToList();
                 return wedstrijden;
             }
         }
@@ -101,8 +110,38 @@ namespace Dartsmanager.Services
         {
             using (var db = new DbDartsmanagerContext())
             {
-                var wedstrijdscores = db.GameScores.Where(gs => db.Games.Where(g => g.GroupId == groep.Id).Select(g => g.Id).Contains(gs.GameId)).ToList();
+                var gameIds = db.Games.Where(g => g.GroupId == groep.Id).Select(g => g.Id);
+                var wedstrijdscores = db.GameScores.Where(gs => gameIds.Contains(gs.GameId)).ToList();
                 return wedstrijdscores;
+            }
+        }
+        public static List<GameScore> GetAllScores(Tournament tornooi)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                var gameIds = db.Games.Where(g => g.TournamentId == tornooi.Id).Select(g => g.Id);
+                var wedstrijdscores = db.GameScores.Where(gs => gameIds.Contains(gs.GameId)).ToList();
+                return wedstrijdscores;
+            }
+        }
+        public static List<GameScore> GetAllScores(Game wedstrijd)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                var wedstrijdscores = db.GameScores.Where(gs => gs.GameId == wedstrijd.Id).ToList();
+                return wedstrijdscores;
+            }
+        }
+        public static GameScore? GetScore(Game wedstrijd, Player speler)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                var wedstrijdscore = db.GameScores.FirstOrDefault(gs => gs.GameId == wedstrijd.Id && gs.PlayerId == speler.Id);
+                if (wedstrijdscore != null)
+                {
+                    return wedstrijdscore;
+                };
+                return null;
             }
         }
         public static int GetLegsFromGamescore(Game wedstrijd, Player speler)
@@ -127,6 +166,28 @@ namespace Dartsmanager.Services
             {
                 double gemiddelde = db.GameScores.Where(gs => gs.GameId == wedstrijd.Id && gs.PlayerId == speler.Id).Select(gs => gs.Gemiddelde.GetValueOrDefault()).FirstOrDefault();
                 return gemiddelde;
+            }
+        }
+        public static void UpdateGamescore(GameScore score)
+        {
+            try
+            {
+                using (var db = new DbDartsmanagerContext())
+                {
+                    var gamescore_gevonden = db.GameScores.FirstOrDefault(gs => gs.Id == score.Id);
+                    if (gamescore_gevonden != null)
+                    {
+                        gamescore_gevonden.SetsWon = score.SetsWon;
+                        gamescore_gevonden.LegsWon = score.LegsWon;
+                        gamescore_gevonden.Aantal180 = score.Aantal180;
+                        gamescore_gevonden.Gemiddelde = score.Gemiddelde;
+                        db.SaveChanges();
+                    }
+                }
+            }
+            catch
+            {
+                throw new InvalidOperationException("Kon de score niet aanpassen. Controleer of de naam uniek is of de databaseverbinding juist is.");
             }
         }
         public static void UpdateLegsFromGamescore(Game wedstrijd, Player speler, int nieuwe_legs)
@@ -188,6 +249,25 @@ namespace Dartsmanager.Services
 
                 
             }
+        }
+        public static (Player winnaar, Player verliezer)? GetGameResult(Game wedstrijd)
+        {
+            var scores = GetAllScores(wedstrijd);
+            if (scores != null && scores.Count >= 2)
+            {
+                if (scores[0].LegsWon != null && scores[1].LegsWon != null)
+                {
+                    if (scores[0].LegsWon > scores[1].LegsWon)
+                    {
+                        return (scores[0].Player, scores[1].Player);
+                    }
+                    else if (scores[1].LegsWon > scores[0].LegsWon)
+                    {
+                        return (scores[1].Player, scores[0].Player);
+                    }
+                }
+            }
+            return null;
         }
 
     }

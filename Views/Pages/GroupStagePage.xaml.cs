@@ -69,37 +69,20 @@ namespace Dartsmanager.Views.Pages
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
+            grid.Margin = new Thickness(5,5,5,25);
+
             // --- TITEL --- met groepsnummer
             TextBlock titel = new TextBlock
             {
                 Text = $"Groep {groep.GroepNummer}",
-                Style = (Style)TryFindResource("TextBlock_H3")
+                Style = (Style)TryFindResource("TextBlock_H2")
             };
             Grid.SetRow(titel, 0); // Rij in grid bepalen
             Grid.SetColumn(titel, 0); // Kolom in grid bepalen
             grid.Children.Add(titel); // Toevoegen aan grid
 
             // --- SPELERSINFO ---  binnen de groep ophalen en aanmaken
-            var spelers = TournamentService.GetAllPlayersFromGroup(groep);
-            List<GroupPlayerInfo> spelersinfo = new List<GroupPlayerInfo>();
-            foreach( Player speler in spelers)
-            {
-                spelersinfo.Add(new GroupPlayerInfo
-                {
-                    Speler = speler,
-                    GroepSets = TournamentService.GetSetsPerGroupsPlayer(groep, speler),
-                    GroepLegs = TournamentService.GetLegsPerGroupsPlayer(groep, speler),
-                    Groep180 = TournamentService.Get180PerGroupsPlayer(groep, speler),
-                    GroepGemiddelde = TournamentService.GetGemiddeldePerGroupsPlayer(groep, speler),
-                });
-            }
-            // Sorteren
-            spelersinfo = spelersinfo
-                .OrderByDescending(s => s.GroepSets)
-                .ThenByDescending(s => s.GroepLegs)
-                .ThenByDescending(s => s.Groep180)
-                .ThenByDescending(s => s.GroepGemiddelde)
-                .ToList();
+            List<GroupPlayerInfo> spelersinfo = TournamentService.GetPlayerRanking(groep);            
 
             // --- DATAGRID spelersinfo --- per groep
             DataGrid dg_spelersinfo = new DataGrid
@@ -256,8 +239,8 @@ namespace Dartsmanager.Views.Pages
                 GridLinesVisibility = DataGridGridLinesVisibility.None,
                 AutoGenerateColumns = false, // Zorgt voor vrije controle over de kolommen
             };
-            // indien niet ingelogd alles read only zetten
-            if (_actieve_gebruiker == null)
+            // indien niet ingelogd of de volgende ronde is al bezig: alles read only zetten
+            if (_actieve_gebruiker == null || (_actief_tornooi != null && _actief_tornooi.ActieveRonde != 1))
             {
                 dg_wedstrijden.IsReadOnly = true;
             }
@@ -282,7 +265,8 @@ namespace Dartsmanager.Views.Pages
             {
                 Header = "Legs",
                 MinWidth = 50,
-                ElementStyle = centerStyle,                
+                ElementStyle = centerStyle,
+                SortMemberPath = "Legs1",
                 Binding = new Binding("Legs1")
             });
             dg_wedstrijden.Columns.Add(new DataGridTextColumn
@@ -290,6 +274,7 @@ namespace Dartsmanager.Views.Pages
                 Header = "180",
                 MinWidth = 50,
                 ElementStyle = centerStyle,
+                SortMemberPath = "180_1",
                 Binding = new Binding("Number_180_1")
             });
             dg_wedstrijden.Columns.Add(new DataGridTextColumn
@@ -297,6 +282,7 @@ namespace Dartsmanager.Views.Pages
                 Header = "Gem.",
                 MinWidth = 50,
                 ElementStyle = centerStyle,
+                SortMemberPath = "Gem_1",
                 Binding = new Binding("Gemiddelde1")
             });
 
@@ -313,6 +299,7 @@ namespace Dartsmanager.Views.Pages
                 Header = "Legs",
                 MinWidth = 50,
                 ElementStyle = centerStyle,
+                SortMemberPath = "Legs2",
                 Binding = new Binding("Legs2")
             });
             dg_wedstrijden.Columns.Add(new DataGridTextColumn
@@ -320,6 +307,7 @@ namespace Dartsmanager.Views.Pages
                 Header = "180",
                 MinWidth = 50,
                 ElementStyle = centerStyle,
+                SortMemberPath = "180_2",
                 Binding = new Binding("Number_180_2")
             });
             dg_wedstrijden.Columns.Add(new DataGridTextColumn
@@ -327,6 +315,7 @@ namespace Dartsmanager.Views.Pages
                 Header = "Gem.",
                 MinWidth = 50,
                 ElementStyle = centerStyle,
+                SortMemberPath = "Gem_2",
                 Binding = new Binding("Gemiddelde2")
             });
             // Methode voor het wijzigen van de scores up te daten in de database
@@ -352,71 +341,100 @@ namespace Dartsmanager.Views.Pages
             _groepSpelerGrids[groep.GroepNummer] = dg_spelersinfo;
 
             return grid;
-        }
+        } 
 
         private void DgWedstrijden_CellEditEnding(object? sender, DataGridCellEditEndingEventArgs e)
         {
-            if (e.Row.Item is GameInfo gameInfo && e.EditingElement is TextBox nieuwe_legs_string)
+            if (e.Row.Item is GameInfo gameInfo && e.EditingElement is TextBox nieuwe_waarde_string)
             {
-                // Kijken of nieuwe legs een int is
-                int nieuwe_legs = -1;
-                if (int.TryParse(nieuwe_legs_string.Text, out nieuwe_legs))
+                // Update maken voor Legs/180/gemiddelde
+                // De juiste speler bepalen
+                Player? speler = null;
+                if (e.Column.SortMemberPath == "Legs1" || e.Column.SortMemberPath == "180_1" || e.Column.SortMemberPath == "Gem_1")
                 {
-                    if (nieuwe_legs >= 0 && nieuwe_legs <= 10)
+                    speler = gameInfo.Speler1;
+                }
+                else if (e.Column.SortMemberPath == "Legs2" || e.Column.SortMemberPath == "180_2" || e.Column.SortMemberPath == "Gem_2")
+                {
+                    speler = gameInfo.Speler2;
+                }
+
+                if (speler != null)
+                {
+                    // kijken of de gebruiker wel rechten heeft (admin of speler zelf)
+                    if (_actieve_gebruiker != null && (_actieve_gebruiker.IsAdmin == true || (_actieve_gebruiker.PlayerId == speler.Id && _actieve_gebruiker.PlayerIdBevestigd == true)))
                     {
-                        // Kijken welke speler we moeten wijzigen                
-                        Player? speler = null;
-                        if (e.Column.Header?.ToString() == "Legs S1")
+                        // Score zoeken
+                        var score = GameService.GetScore(gameInfo.Wedstrijd, speler);
+                        if (score != null)
                         {
-                            speler = gameInfo.Speler1;
-                        }
-                        else if (e.Column.Header?.ToString() == "Legs S2")
-                        {
-                            speler = gameInfo.Speler2;
-                        }
-
-                        
-                        if (speler != null)
-                        {
-                            // kijken of de gebruiker wel rechten heeft
-                            if (_actieve_gebruiker != null && (_actieve_gebruiker.IsAdmin == true || (_actieve_gebruiker.PlayerId == speler.Id && _actieve_gebruiker.PlayerIdBevestigd == true)))
+                            if (e.Column.SortMemberPath == "Legs1" || e.Column.SortMemberPath == "Legs2")
                             {
-                                // Update database
-                                GameService.UpdateLegsFromGamescore(gameInfo.Wedstrijd, speler, nieuwe_legs);
-                                GameService.UpdateSetFromLegs(gameInfo.Wedstrijd);
-                            }
-                            else
-                            {
-                                MessageBox.Show("U heeft geen rechten om deze score te wijzigen.");
-                                // Oude waarde terugzetten
-                                if (e.Column.Header?.ToString() == "Legs S1")
+                                //Kijken of nieuwe legs een int is
+                                if (int.TryParse(nieuwe_waarde_string.Text, out int nieuwe_legs) && nieuwe_legs >= 0 && nieuwe_legs <= 10)
                                 {
-                                    nieuwe_legs_string.Text = gameInfo.Legs1.ToString();
+                                    score.LegsWon = nieuwe_legs;
                                 }
-                                else if (e.Column.Header?.ToString() == "Legs S2")
+                                else
                                 {
-                                    nieuwe_legs_string.Text = gameInfo.Legs2.ToString();
+                                    MessageBox.Show("Voer een waarde in van 0 tem 10."); return;
                                 }
-                                return;
-                            }
-                        }
 
-                        // Daarna tussenstand opnieuw berekenen
-                        var groep = TournamentService.GetGroupFromGame(gameInfo.Wedstrijd);
-                        if (groep != null)
-                        {
-                            RefreshGroep(groep);
+                            }
+                            else if (e.Column.SortMemberPath == "180_1" || e.Column.SortMemberPath == "180_2")
+                            {
+                                //Kijken of nieuwe 180 een int is
+                                if (int.TryParse(nieuwe_waarde_string.Text, out int nieuwe_180) && nieuwe_180 >= 0)
+                                {
+                                    score.Aantal180 = nieuwe_180;
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Voer een gehele waarde groter dan of gelijk aan 0 in."); return;
+                                }
+                            }
+                            else if (e.Column.SortMemberPath == "Gem_1" || e.Column.SortMemberPath == "Gem_2")
+                            {
+                                //Kijken of nieuw gemiddelde een double is
+                                if (double.TryParse(nieuwe_waarde_string.Text, out double nieuw_gemiddelde) && nieuw_gemiddelde >= 0)
+                                {
+                                    score.Gemiddelde = nieuw_gemiddelde;
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Voer een getalwaarde groter dan of gelijk aan 0 in."); return;
+                                }
+                            }
+                            // Update database
+                            GameService.UpdateGamescore(score);
+                            // Daarna tussenstand opnieuw berekenen
+                            GameService.UpdateSetFromLegs(gameInfo.Wedstrijd);
+                            var gr = TournamentService.GetGroupFromGame(gameInfo.Wedstrijd);
+                            if (gr != null)
+                            {
+                                RefreshGroep(gr);
+                            }
                         }
                     }
                     else
                     {
-                        MessageBox.Show("Voer een waarde in van 0 tem 10."); return;
+                        MessageBox.Show("U heeft geen rechten om deze score te wijzigen.");
+                        // Oude waarde terugzetten
+                        //OudeWaarden;
+
+
+                        return;
                     }
                 }
-                else
+
+
+                // Daarna tussenstand opnieuw berekenen
+                var groep = TournamentService.GetGroupFromGame(gameInfo.Wedstrijd);
+                if (groep != null)
                 {
-                    MessageBox.Show("Dit is geen geldige waarde!"); return;
-                }                
+                    RefreshGroep(groep);
+                }
+
             }
         }
 

@@ -65,7 +65,9 @@ namespace Dartsmanager
                     BT_Login.Background = new SolidColorBrush(Colors.IndianRed);
                 }
             }
+            // Terug naar homepage navigeren
             Frame_Pagina.Navigate(new HomePage(_actieve_gebruiker));
+            BT_Home.Focus();
             ShowAdminButton();
         }
 
