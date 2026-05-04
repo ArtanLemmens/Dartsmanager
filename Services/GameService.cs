@@ -31,7 +31,12 @@ namespace Dartsmanager.Services
         {
             using (var db = new DbDartsmanagerContext())
             {
-                var wedstrijden = db.Games.Include(g => g.Tournament).Where(g => g.TournamentId == tornooi.Id && g.Tournament != null && g.Tournament.ActieveRonde == ronde).ToList();
+                var wedstrijden = db.Games
+                    .Include(g => g.Player1)
+                    .Include(g => g.Player2)
+                    .Include(g => g.Tournament)
+                    .Where(g => g.TournamentId == tornooi.Id && g.Ronde == ronde)
+                    .ToList();
                 return wedstrijden;
             }
         }
@@ -48,6 +53,14 @@ namespace Dartsmanager.Services
             using (var db = new DbDartsmanagerContext())
             {
                 var wedstrijden = db.Games.Where(g => g.Player1Id == speler.Id || g.Player2Id == speler.Id).ToList();
+                return wedstrijden;
+            }
+        }
+        public static List<Game> GetAllfromKOstage(Tournament tornooi)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                var wedstrijden = db.Games.Where(g => g.TournamentId == tornooi.Id && tornooi.ActieveRonde != null && tornooi.ActieveRonde > 1).ToList();
                 return wedstrijden;
             }
         }
@@ -128,7 +141,7 @@ namespace Dartsmanager.Services
         {
             using (var db = new DbDartsmanagerContext())
             {
-                var wedstrijdscores = db.GameScores.Where(gs => gs.GameId == wedstrijd.Id).ToList();
+                var wedstrijdscores = db.GameScores.Include(gs => gs.Player).Where(gs => gs.GameId == wedstrijd.Id).ToList();
                 return wedstrijdscores;
             }
         }

@@ -184,6 +184,13 @@ namespace Dartsmanager.Services
                         {
                             bestaandTornooi.StatusId = status.Id;
                             bestaandTornooi.ActieveRonde = 1;
+                            // Aantal rondes bepalen
+                            int rondes = 1;
+                            if (bestaandTornooi.MaxInschrijvingen != null)
+                            { 
+                                rondes = (int)Math.Log2((int)bestaandTornooi.MaxInschrijvingen);
+                            }
+                            bestaandTornooi.AantalRondes = rondes;
                             db.SaveChanges();
                             MessageBox.Show("Het tornooi is gestart.");
                             return status;
@@ -420,6 +427,13 @@ namespace Dartsmanager.Services
                         }
                     }
                     tornooi.ActieveRonde = 1;
+                    // Aantal rondes bepalen
+                    int rondes = 1;
+                    if (tornooi.MaxInschrijvingen != null)
+                    {
+                        rondes = (int)Math.Log2((int)tornooi.MaxInschrijvingen);
+                    }
+                    tornooi.AantalRondes = rondes;
                     Update(tornooi);
                     db.SaveChanges();
                     MessageBox.Show("Wedstrijdschema aangemaakt");
@@ -598,9 +612,7 @@ namespace Dartsmanager.Services
                     if (bestaandRegistratie != null)
                     {
                         // kijken of er al wedstrijden bestaan voor het tornooi
-                        MessageBox.Show("0");
                         var wedstrijden = GameService.GetAll(bestaandRegistratie.Tournament);
-                        MessageBox.Show("1");
                         if (wedstrijden.Count > 0)
                         {
                             MessageBox.Show("Er zijn al wedstrijden aangemaakt. U kan de speler niet meer verwijderen uit het tornooi!");
@@ -851,11 +863,25 @@ namespace Dartsmanager.Services
                                 return;
                             }
                         }
+                        // Kijken of dit de laatse ronde was
+                        if (tornooi.ActieveRonde == tornooi.AantalRondes)
+                        {
+                            MessageBox.Show("Het tornooi werd afgesloten.");
+                            var status = GetStatusByName("Afgelopen");
+                            if (status != null)
+                            {
+                                tornooi.StatusId = status.Id;
+                                Update(tornooi);
+                            }                            
+                            return;
+                        }
                         // Wedstrijden maken voor de winnaars (indien er meer dan 1 winaar is
                         if (winnaars.Count > 1)
                         {
                             for (int i = 0; i < winnaars.Count; i += 2)
                             {
+                                
+
                                 var wedstrijd = new Game
                                 {
                                     TournamentId = tornooi.Id,

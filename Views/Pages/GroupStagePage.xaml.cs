@@ -239,8 +239,8 @@ namespace Dartsmanager.Views.Pages
                 GridLinesVisibility = DataGridGridLinesVisibility.None,
                 AutoGenerateColumns = false, // Zorgt voor vrije controle over de kolommen
             };
-            // indien niet ingelogd of de volgende ronde is al bezig: alles read only zetten
-            if (_actieve_gebruiker == null || (_actief_tornooi != null && _actief_tornooi.ActieveRonde != 1))
+            // indien niet ingelogd als admin of de volgende ronde is al bezig: alles read only zetten
+            if (_actieve_gebruiker == null || (_actieve_gebruiker != null && _actieve_gebruiker.IsAdmin == false) || (_actief_tornooi != null && _actief_tornooi.ActieveRonde != 1))
             {
                 dg_wedstrijden.IsReadOnly = true;
             }
@@ -361,8 +361,8 @@ namespace Dartsmanager.Views.Pages
 
                 if (speler != null)
                 {
-                    // kijken of de gebruiker wel rechten heeft (admin of speler zelf)
-                    if (_actieve_gebruiker != null && (_actieve_gebruiker.IsAdmin == true || (_actieve_gebruiker.PlayerId == speler.Id && _actieve_gebruiker.PlayerIdBevestigd == true)))
+                    // Enkel admins laten wijzigen
+                    if (_actieve_gebruiker != null && (_actieve_gebruiker.IsAdmin == true))
                     {
                         // Score zoeken
                         var score = GameService.GetScore(gameInfo.Wedstrijd, speler);

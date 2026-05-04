@@ -188,6 +188,7 @@ namespace Dartsmanager.Views.Pages
             if (speler != null)
             {
                 TournamentService.RegisterPlayer(_actief_tornooi, speler);
+                LoadTournamentData();
                 Frame_Tournament.Navigate(new PlayerOverview(_actieve_gebruiker, Frame_Tournament, _actief_tornooi));
             }
         }
@@ -207,6 +208,7 @@ namespace Dartsmanager.Views.Pages
             if (speler != null)
             {
                 TournamentService.EndPlayerRegistration(_actief_tornooi, speler);
+                LoadTournamentData();
                 Frame_Tournament.Navigate(new PlayerOverview(_actieve_gebruiker, Frame_Tournament, _actief_tornooi));
             }
         }
@@ -224,6 +226,7 @@ namespace Dartsmanager.Views.Pages
                     return;
                 }
                 TournamentService.RegisterPlayer(_actief_tornooi, SpelerSelectie._geselecteerde_speler);
+                LoadTournamentData();
                 Frame_Tournament.Navigate(new PlayerOverview(_actieve_gebruiker, Frame_Tournament, _actief_tornooi));
             }
         }
@@ -239,6 +242,7 @@ namespace Dartsmanager.Views.Pages
                     return;
                 }
                 TournamentService.EndPlayerRegistration(_actief_tornooi, SpelerSelectie._geselecteerde_speler);
+                LoadTournamentData();
                 Frame_Tournament.Navigate(new PlayerOverview(_actieve_gebruiker, Frame_Tournament, _actief_tornooi));
             }
         }
@@ -251,6 +255,7 @@ namespace Dartsmanager.Views.Pages
                 {
                     _actief_tornooi.Status = status;
                     _actief_tornooi.StatusId = status.Id;
+                    _actief_tornooi.ActieveRonde = 1;
                     LoadTournamentData();
                 }                
 
@@ -265,6 +270,7 @@ namespace Dartsmanager.Views.Pages
                 {
                     _actief_tornooi.Status = status;
                     _actief_tornooi.StatusId = status.Id;
+                    _actief_tornooi.ActieveRonde = 0;
                     // Dummyspelers terug verwijderen uit tornooi
                     var inschrijvingen_dummy = TournamentService.GetAllDummyRegistrations(_actief_tornooi);
                     foreach(var inschrijving in inschrijvingen_dummy)
@@ -343,7 +349,10 @@ namespace Dartsmanager.Views.Pages
 
         private void BT_Tournament_KOfase_Click(object sender, RoutedEventArgs e)
         {
-
+            if (_actief_tornooi != null)
+            {
+                Frame_Tournament.Navigate(new KOStagePage(_actieve_gebruiker, _actief_tornooi, Frame_Tournament));
+            }
         }
 
         private void BT_Tournament_Wedstrijden_Click(object sender, RoutedEventArgs e)
