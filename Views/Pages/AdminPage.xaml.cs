@@ -49,7 +49,7 @@ namespace Dartsmanager.Views.Pages
 
         private void BT_Countries_Click(object sender, RoutedEventArgs e)
         {
-
+            Frame_Admin.Navigate(new CountryOverview(_actieve_gebruiker, Frame_Admin));
         }
     }
 }

@@ -23,20 +23,17 @@ namespace Dartsmanager.Views.Pages
     {
         private User? _actieve_gebruiker = null;
         private Frame _frame;
+        private Player? _actieve_speler = null;
 
-        public TournamentOverview(User? actieve_gebruiker, Frame frame)
+        public TournamentOverview(User? actieve_gebruiker, Frame frame, Player? actieve_speler = null)
         {
             InitializeComponent();
             _actieve_gebruiker = actieve_gebruiker;
+            _actieve_speler = actieve_speler;
             _frame = frame;
-            GetTournaments();
+            FilterTournaments();
         }
 
-        private void GetTournaments()
-        {
-            var tornooien = TournamentService.GetAll();
-            LB_Tornooien.ItemsSource = tornooien;
-        }
         private void FilterTournaments()
         {
             if (LB_Tornooien == null)
@@ -50,15 +47,27 @@ namespace Dartsmanager.Views.Pages
             // Bij een lege waarde of "zoek tornooi" mogen al de tornooien getoond worden
             if (string.IsNullOrWhiteSpace(filter) || filter == "Zoek tornooi...")
             {
-                tornooien = TournamentService.GetAll();
-                
+                if (_actieve_speler != null)
+                {
+                    tornooien = TournamentService.GetAll(_actieve_speler);
+                }
+                else
+                {
+                    tornooien = TournamentService.GetAll();
+                }
             }
             else
             {
                 // filteren op de gefilterde waarde
-                tornooien = TournamentService.GetTournamentsFromNameFilter(filter);
+                if (_actieve_speler != null)
+                {
+                    tornooien = TournamentService.GetTournamentsFromNameFilter(filter, _actieve_speler);
+                }
+                else
+                {
+                    tornooien = TournamentService.GetTournamentsFromNameFilter(filter);
+                }
             }
-            
             LB_Tornooien.ItemsSource = tornooien;
             LB_Tornooien.Items.Refresh();
         }

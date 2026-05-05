@@ -15,18 +15,32 @@ namespace Dartsmanager.Services
         {
             using (var db = new DbDartsmanagerContext())
             {
-                var wedstrijden = db.Games.ToList();
+                var wedstrijden = db.Games.Include(g => g.Tournament)
+                    .Include(g => g.Player1)
+                    .Include(g => g.Player2)
+                    .ToList();
                 return wedstrijden;
             }
         }
-        public static List<Game> GetAll(Tournament tornooi)
+        public static List<Game> GetAll(Tournament? tornooi)
         {
             using (var db = new DbDartsmanagerContext())
             {
-                var wedstrijden = db.Games.Where(g => g.TournamentId == tornooi.Id).ToList();
+                if (tornooi == null)
+                {
+                    return db.Games.Include(g => g.Tournament)
+                    .Include(g => g.Player1)
+                    .Include(g => g.Player2)
+                    .ToList();
+                }
+                var wedstrijden = db.Games.Include(g => g.Tournament)
+                    .Include(g => g.Player1)
+                    .Include(g => g.Player2)
+                    .Where(g => g.TournamentId == tornooi.Id)
+                    .ToList();
                 return wedstrijden;
             }
-        }
+        } 
         public static List<Game> GetAll(Tournament tornooi, int ronde)
         {
             using (var db = new DbDartsmanagerContext())
@@ -52,7 +66,11 @@ namespace Dartsmanager.Services
         {
             using (var db = new DbDartsmanagerContext())
             {
-                var wedstrijden = db.Games.Where(g => g.Player1Id == speler.Id || g.Player2Id == speler.Id).ToList();
+                var wedstrijden = db.Games
+                    .Include(g => g.Tournament)
+                    .Include(g => g.Player1)
+                    .Include(g => g.Player2)
+                    .Where(g => g.Player1Id == speler.Id || g.Player2Id == speler.Id).ToList();
                 return wedstrijden;
             }
         }
@@ -62,6 +80,22 @@ namespace Dartsmanager.Services
             {
                 var wedstrijden = db.Games.Where(g => g.TournamentId == tornooi.Id && tornooi.ActieveRonde != null && tornooi.ActieveRonde > 1).ToList();
                 return wedstrijden;
+            }
+        }
+        public static List<Game> GetGamesFromNameFilter(string filter, Player? speler = null, Tournament? tornooi = null)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                return db.Games
+                    .Include(g => g.Tournament)
+                    .Include(g => g.Player1)
+                    .Include(g => g.Player2)
+                    .Where(g => ((g.Tournament != null && g.Tournament.Naam.Contains(filter))
+                    || (g.Player1 != null && (g.Player1.Voornaam.Contains(filter) || g.Player1.Naam.Contains(filter)))
+                    || (g.Player2 != null && (g.Player2.Voornaam.Contains(filter) || g.Player2.Naam.Contains(filter))))
+                    && (speler == null || g.Player1Id == speler.Id || g.Player2Id == speler.Id)
+                    && (tornooi == null || g.TournamentId == tornooi.Id))
+                    .ToList();
             }
         }
         public static void Add(Game wedstrijd)

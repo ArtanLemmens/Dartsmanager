@@ -26,6 +26,13 @@ namespace Dartsmanager.Services
                 return land;
             }
         }
+        public static List<Country> GetCountriesFromNameFilter(string filter)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                return db.Countries.Where(c => c.Naam.Contains(filter)).ToList();
+            }
+        }
 
         public static bool CheckExistingCountry(string naam, string afkorting)
         {
@@ -110,7 +117,10 @@ namespace Dartsmanager.Services
         {
             using (var db = new DbDartsmanagerContext())
             {
-                return db.Adresses.Where(a => a.Straat.Contains(filter) || (a.Gemeente != null && a.Gemeente.Contains(filter))).ToList();
+                return db.Adresses.Include(a => a.Country).Where(a => a.Straat.Contains(filter) 
+                || (a.Gemeente != null && a.Gemeente.Contains(filter))
+                || (a.Postcode != null && a.Postcode.Contains(filter))
+                || (a.Country != null && a.Country.Naam.Contains(filter))).ToList();
             }
         }
         public static bool CheckExistingAdres(string straat, int huisnummer, string toevoeging, string postcode, string gemeente, int? countryId)

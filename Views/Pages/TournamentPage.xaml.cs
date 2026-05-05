@@ -377,7 +377,10 @@ namespace Dartsmanager.Views.Pages
 
         private void BT_Tournament_Wedstrijden_Click(object sender, RoutedEventArgs e)
         {
-
+            if (_actief_tornooi != null)
+            {
+                Frame_Tournament.Navigate(new GameOverview(_actieve_gebruiker, Frame_Tournament, _actief_tornooi));
+            }
         }
 
         

@@ -24,14 +24,12 @@ namespace Dartsmanager.Views.Pages
     {
         private User? _actieve_gebruiker = null;
         private Frame _frame;
-        private Tournament? _actief_tornooi = null;
 
-        public AdressOverview(User? actieve_gebruiker, Frame frame, Tournament? actief_tornooi = null)
+        public AdressOverview(User? actieve_gebruiker, Frame frame)
         {
             InitializeComponent();
             _actieve_gebruiker = actieve_gebruiker;
             _frame = frame;
-            _actief_tornooi = actief_tornooi;
             GetAdresses();
         }
         private void GetAdresses()

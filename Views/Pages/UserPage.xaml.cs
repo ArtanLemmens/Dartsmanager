@@ -238,12 +238,18 @@ namespace Dartsmanager.Views.Pages
 
         private void BT_Player_Tornooien_Click(object sender, RoutedEventArgs e)
         {
-
+            if (_geselecteerde_gebruiker != null && _geselecteerde_gebruiker.PlayerId != null && _geselecteerde_gebruiker.PlayerIdBevestigd == true)
+            {
+                Frame_Player.Navigate(new TournamentOverview(_actieve_gebruiker, Frame_Player, _geselecteerde_gebruiker.Player));
+            }
         }
 
         private void BT_Player_Wedstrijden_Click(object sender, RoutedEventArgs e)
         {
-
+            if (_geselecteerde_gebruiker != null && _geselecteerde_gebruiker.PlayerId != null && _geselecteerde_gebruiker.PlayerIdBevestigd == true)
+            {
+                Frame_Player.Navigate(new GameOverview(_actieve_gebruiker, Frame_Player, null, _geselecteerde_gebruiker.Player));
+            }
         }
 
         private void BT_Player_Statistieken_Click(object sender, RoutedEventArgs e)

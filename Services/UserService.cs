@@ -22,7 +22,7 @@ namespace Dartsmanager.Services
         {
             using (var db = new DbDartsmanagerContext())
             {
-                var gebruiker = db.Users.FirstOrDefault(u => u.Id == id);
+                var gebruiker = db.Users.Include(u => u.Player).FirstOrDefault(u => u.Id == id);
                 return gebruiker;
             }
         }
@@ -30,7 +30,7 @@ namespace Dartsmanager.Services
         {
             using (var db = new DbDartsmanagerContext())
             {
-                var gebruiker = db.Users.FirstOrDefault(u => u.Username == naam);
+                var gebruiker = db.Users.Include(u => u.Player).FirstOrDefault(u => u.Username == naam);
                 return gebruiker;
             }
         }
@@ -38,7 +38,7 @@ namespace Dartsmanager.Services
         {
             using (var db = new DbDartsmanagerContext())
             {
-                return db.Users.Where(p => p.Username.Contains(filter)).ToList();
+                return db.Users.Include(u => u.Player).Where(p => p.Username.Contains(filter)).ToList();
             }
         }
         public static bool CheckExistingName(string naam)

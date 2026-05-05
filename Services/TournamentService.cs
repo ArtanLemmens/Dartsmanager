@@ -18,7 +18,21 @@ namespace Dartsmanager.Services
                 var tornooien = db.Tournaments.Include(t => t.Adres).Include(t => t.Status).ToList();
                 return tornooien;
             }
-        }        
+        }
+        public static List<Tournament> GetAll(Player speler)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                var tornooien = db.Tournaments
+                    .Include(t => t.Adres)
+                    .Include(t => t.Status)
+                    .Include(t => t.Registrations)
+                    .ThenInclude(r => r.Player)
+                    .Where(t => t.Registrations.Any(r => r.PlayerId == speler.Id))
+                    .ToList();
+                return tornooien;
+            }
+        }
         public static int? GetRonde(Tournament tornooi)
         {
             using (var db = new DbDartsmanagerContext())
@@ -31,11 +45,24 @@ namespace Dartsmanager.Services
                 return 0;
             }
         }
-        public static List<Tournament> GetTournamentsFromNameFilter(string filter)
+        public static List<Tournament> GetTournamentsFromNameFilter(string filter, Player? speler = null)
         {
             using (var db = new DbDartsmanagerContext())
             {
-                return db.Tournaments.Where(t => t.Naam.Contains(filter)).ToList();
+                if (speler != null)
+                {
+                    return db.Tournaments
+                    .Include(t => t.Adres)
+                    .Include(t => t.Status)
+                    .Include(t => t.Registrations)
+                    .ThenInclude(r => r.Player)
+                    .Where(t => t.Naam.Contains(filter) && t.Registrations.Any(r => r.PlayerId == speler.Id))
+                    .ToList();
+                }
+                return db.Tournaments
+                    .Include(t => t.Adres)
+                    .Include(t => t.Status)
+                    .Where(t => t.Naam.Contains(filter)).ToList();
             }
         }
         public static bool CheckExistingJaargang(string naam, int jaargang)
@@ -140,11 +167,19 @@ namespace Dartsmanager.Services
             {
                 using (var db = new DbDartsmanagerContext())
                 {
-                    var bestaandTornooi = db.Tournaments.FirstOrDefault(t => t.Id == tornooi.Id);
+                    var bestaandTornooi = db.Tournaments.Include(t => t.Status).FirstOrDefault(t => t.Id == tornooi.Id);
                     if (bestaandTornooi != null)
                     {
-                        db.Tournaments.Remove(bestaandTornooi);
-                        db.SaveChanges();
+                        // Enkel tornooien verwijderen die nog niet gestart of afgelopen zijn!
+                        if (bestaandTornooi.Status == null || (bestaandTornooi.Status != null && bestaandTornooi.Status.Naam == "Niet gestart"))
+                        {
+                            db.Tournaments.Remove(bestaandTornooi);
+                            db.SaveChanges();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Dit tornooi kan niet langer verwijderd worden");
+                        }
                     }
                 }
             }
