@@ -106,6 +106,13 @@ namespace Dartsmanager.Services
                 return adressen;
             }
         }
+        public static List<Adress> GetAdressesFromNameFilter(string filter)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                return db.Adresses.Where(a => a.Straat.Contains(filter) || (a.Gemeente != null && a.Gemeente.Contains(filter))).ToList();
+            }
+        }
         public static bool CheckExistingAdres(string straat, int huisnummer, string toevoeging, string postcode, string gemeente, int? countryId)
         {
             using (var db = new DbDartsmanagerContext())

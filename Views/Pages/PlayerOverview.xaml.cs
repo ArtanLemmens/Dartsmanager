@@ -128,8 +128,15 @@ namespace Dartsmanager.Views.Pages
                                                   MessageBoxImage.Question);
                     if (result == MessageBoxResult.Yes)
                     {
-                        PlayerService.Remove(speler);
-                        FilterPlayers();
+                        try
+                        {
+                            PlayerService.Remove(speler);
+                            FilterPlayers();
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message, "Fout", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        }
                     }
                 }
             }

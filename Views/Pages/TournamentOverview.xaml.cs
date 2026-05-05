@@ -125,8 +125,15 @@ namespace Dartsmanager.Views.Pages
                                                   MessageBoxImage.Question);
                     if (result == MessageBoxResult.Yes)
                     {
-                        TournamentService.Remove(tornooi);
-                        FilterTournaments();
+                        try
+                        {
+                            TournamentService.Remove(tornooi);
+                            FilterTournaments();
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message, "Fout", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        }
                     }
                 }
             }

@@ -52,6 +52,8 @@ namespace Dartsmanager.Views.Pages
                 CB_Spelers.SelectedValue = _geselecteerde_gebruiker.PlayerId;
                 CHB_Speler_Bevestigd.IsChecked = _geselecteerde_gebruiker.PlayerIdBevestigd;
                 BT_Update_Speler_Bevestigd.Visibility = Visibility.Collapsed;
+                CHB_IsAdmin.IsChecked = _geselecteerde_gebruiker.IsAdmin;
+                BT_IsAdmin_Bevestigd.Visibility = Visibility.Collapsed;
             }
             else
             {
@@ -63,6 +65,8 @@ namespace Dartsmanager.Views.Pages
             {
                 CHB_Speler_Bevestigd.IsEnabled = true;
                 BT_Update_Speler_Bevestigd.Visibility = Visibility.Visible;
+                CHB_IsAdmin.IsEnabled = true;
+                BT_IsAdmin_Bevestigd.Visibility = Visibility.Visible;
             }
         }
 
@@ -169,7 +173,11 @@ namespace Dartsmanager.Views.Pages
         {
             if (_geselecteerde_gebruiker == null)
             {
-                MessageBox.Show("Er is geen gebruiker m up te daten"); return;
+                MessageBox.Show("Er is geen gebruiker om up te daten"); return;
+            }
+            if (_actieve_gebruiker != null && _actieve_gebruiker.IsAdmin == false)
+            {
+                MessageBox.Show("U heeft geen rechten om deze waarde te wijzigen"); return;
             }
             if (CHB_Speler_Bevestigd.IsChecked == true)
             {
@@ -181,6 +189,30 @@ namespace Dartsmanager.Views.Pages
             }
             UserService.Update(_geselecteerde_gebruiker);
             MessageBox.Show($"De spelerskoppeling is bevestigd.");
+            // Spelerdata laden
+            LoadPlayerData();
+        }
+
+        private void BT_IsAdmin_Bevestigd_Click(object sender, RoutedEventArgs e)
+        {
+            if (_geselecteerde_gebruiker == null)
+            {
+                MessageBox.Show("Er is geen gebruiker om up te daten"); return;
+            }
+            if (_actieve_gebruiker != null && _actieve_gebruiker.IsAdmin == false)
+            {
+                MessageBox.Show("U heeft geen rechten om deze waarde te wijzigen"); return;
+            }
+            if (CHB_IsAdmin.IsChecked == true)
+            {
+                _geselecteerde_gebruiker.IsAdmin = true;
+            }
+            else
+            {
+                _geselecteerde_gebruiker.IsAdmin = false;
+            }
+            UserService.Update(_geselecteerde_gebruiker);
+            MessageBox.Show($"De spelers adminrechten zijn gewijzigd.");
             // Spelerdata laden
             LoadPlayerData();
         }
@@ -218,6 +250,7 @@ namespace Dartsmanager.Views.Pages
         {
 
         }
+
         
     }
 }

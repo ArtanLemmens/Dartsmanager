@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <None Remove="Images\game.png" />
+    <None Remove="Images\god.png" />
     <None Remove="Images\home.png" />
     <None Remove="Images\profile.png" />
     <None Remove="Images\speler.png" />
@@ -34,6 +35,9 @@
 
   <ItemGroup>
     <Resource Include="Images\game.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\god.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\home.png">

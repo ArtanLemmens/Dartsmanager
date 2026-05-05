@@ -120,8 +120,15 @@ namespace Dartsmanager.Views.Pages
                                                   MessageBoxImage.Question);
                     if (result == MessageBoxResult.Yes)
                     {
-                        UserService.Remove(gebruiker);
-                        FilterUsers();
+                        try
+                        {
+                            UserService.Remove(gebruiker);
+                            FilterUsers();
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message, "Fout", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        }
                     }
                 }
             }

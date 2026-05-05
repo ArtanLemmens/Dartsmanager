@@ -44,7 +44,7 @@ namespace Dartsmanager.Views.Pages
 
         private void BT_Adresses_Click(object sender, RoutedEventArgs e)
         {
-
+            Frame_Admin.Navigate(new AdressOverview(_actieve_gebruiker, Frame_Admin));
         }
 
         private void BT_Countries_Click(object sender, RoutedEventArgs e)

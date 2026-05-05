@@ -118,7 +118,7 @@
             <MenuItem x:Name="BT_Admin" Click="BT_Admin_Click">
                 <MenuItem.Header >
                     <StackPanel Orientation="Horizontal">
-                        <Image  Width="30" />
+                        <Image Source="/Images/god.png" Width="30" />
                         <TextBlock x:Name="TB_Admin" Text="Admin" Padding="5,0,25,0" VerticalAlignment="Center"
                                    Visibility="{Binding IsChecked, ElementName=Toggle_Menu, Converter={StaticResource BoolToVisibilityConverter}}"/>
                     </StackPanel>
