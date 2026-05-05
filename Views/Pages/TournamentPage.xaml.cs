@@ -330,6 +330,26 @@ namespace Dartsmanager.Views.Pages
                     {
                         TournamentService.NextRound(_actief_tornooi);
                     }
+                    // Ronde updaten in TB
+                    var ronde = TournamentService.GetRonde(_actief_tornooi);
+                    if (ronde != null)
+                    {
+                        _actief_tornooi.ActieveRonde = ronde;
+                        TB_Ronde.Text = _actief_tornooi.ActieveRonde.ToString();
+                    }
+                    // Status updaten in TB
+                    var statusid = TournamentService.GetStatusId(_actief_tornooi);
+                    if (statusid != null)
+                    {
+                        _actief_tornooi.StatusId = statusid;
+                        var status = TournamentService.GetStatusById((int)statusid);
+                        if (status != null)
+                        {
+                            _actief_tornooi.Status = status;
+                            TB_Status.Text = _actief_tornooi.Status.Naam;
+                        }
+                    }
+                    Frame_Tournament.Navigate(new KOStagePage(_actieve_gebruiker, _actief_tornooi, Frame_Tournament));
                 }
             }
         }

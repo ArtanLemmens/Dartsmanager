@@ -111,14 +111,35 @@ namespace Dartsmanager.Views.Pages
                     if (wedstrijden_ronde != null && wedstrijden_ronde.Count > 0)
                     {
                         // --- ONDERTITELS --- met reeks A & B
+                        string tekst_ronde = $"Ronde {i}";
+                        if (wedstrijden_ronde.Count <= 2)
+                        {
+                            tekst_ronde = "Finale";
+                        }
+                        else if (wedstrijden_ronde.Count <= 4)
+                        {
+                            tekst_ronde = "Halve finale";
+                        }
+                        else if (wedstrijden_ronde.Count <= 8)
+                        {
+                            tekst_ronde = "Kwart finale";
+                        }
+                        else if (wedstrijden_ronde.Count <= 16)
+                        {
+                            tekst_ronde = "Achtste finale";
+                        }
+                        else if (wedstrijden_ronde.Count <= 32)
+                        {
+                            tekst_ronde = "Zestiende finale";
+                        }
                         TextBlock ondertitelA = new TextBlock
                         {
-                            Text = $"Ronde {i}",
+                            Text = tekst_ronde,
                             Style = (Style)TryFindResource("TextBlock_H3")
                         };
                         TextBlock ondertitelB = new TextBlock
                         {
-                            Text = $"Ronde {i}",
+                            Text = tekst_ronde,
                             Style = (Style)TryFindResource("TextBlock_H3")
                         };
                         Grid.SetRow(ondertitelA, 1); // Rij in grid bepalen

@@ -18,20 +18,17 @@ namespace Dartsmanager.Services
                 var tornooien = db.Tournaments.Include(t => t.Adres).Include(t => t.Status).ToList();
                 return tornooien;
             }
-        }
-        public static int? GetStatusId(Tournament? tornooi)
+        }        
+        public static int? GetRonde(Tournament tornooi)
         {
             using (var db = new DbDartsmanagerContext())
             {
-                if (tornooi != null)
+                var gezocht_tornooi = db.Tournaments.FirstOrDefault(t => t.Id == tornooi.Id);
+                if (gezocht_tornooi != null)
                 {
-                    var gezocht_tornooi = db.Tournaments.FirstOrDefault(t => t.Id == tornooi.Id);
-                    if (gezocht_tornooi != null)
-                    {
-                        return gezocht_tornooi.StatusId;                        
-                    }
+                    return gezocht_tornooi.ActieveRonde;
                 }
-                return null;
+                return 0;
             }
         }
         public static List<Tournament> GetTournamentsFromNameFilter(string filter)
@@ -470,6 +467,33 @@ namespace Dartsmanager.Services
             {
                 var statuses = db.Statuses.ToList();
                 return statuses;
+            }
+        }
+        public static int? GetStatusId(Tournament? tornooi)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                if (tornooi != null)
+                {
+                    var gezocht_tornooi = db.Tournaments.FirstOrDefault(t => t.Id == tornooi.Id);
+                    if (gezocht_tornooi != null)
+                    {
+                        return gezocht_tornooi.StatusId;
+                    }
+                }
+                return null;
+            }
+        }
+        public static Status? GetStatusById(int statusId)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                var gezochte_status = db.Statuses.FirstOrDefault(s => s.Id == statusId);
+                if (gezochte_status != null)
+                {
+                    return gezochte_status;
+                }
+                return null;
             }
         }
         public static Status? GetStatusByName(string naam)
