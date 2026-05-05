@@ -104,7 +104,7 @@ namespace Dartsmanager.Views.Pages
         {
             if (LB_Wedstrijden.SelectedItem is Game wedstrijd)
             {
-                //_frame.Navigate(new GamePage(_actieve_gebruiker, wedstrijd, _frame));
+                _frame.Navigate(new GamePage(_actieve_gebruiker, wedstrijd, _frame));
             }
             else
             {

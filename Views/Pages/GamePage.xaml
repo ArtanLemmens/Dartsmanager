@@ -1,0 +1,55 @@
+﻿<Page x:Class="Dartsmanager.Views.Pages.GamePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Dartsmanager.Views.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="GamePage">
+
+    <Grid Margin="5" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Button Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" x:Name="BT_GameOverview"
+                Content="Terug naar overzicht" Click="BT_GameOverview_Click" Style="{StaticResource Button_B1}" />
+
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Overzicht wedstrijd" Style="{StaticResource TextBlock_H2}" />
+
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Speler 1" Style="{StaticResource TextBlock_H3}" />
+        <TextBlock Grid.Row="2" Grid.Column="1" x:Name="TB_Speler1_Naam" Style="{StaticResource TextBlock_p}"/>
+        <TextBlock Grid.Row="2" Grid.Column="2" Text="Speler 2" Style="{StaticResource TextBlock_H3}" />
+        <TextBlock Grid.Row="2" Grid.Column="3" x:Name="TB_Speler2_Naam" Style="{StaticResource TextBlock_p}"/>
+        
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="Legs speler 1" Style="{StaticResource TextBlock_H3}" />
+        <TextBlock Grid.Row="3" Grid.Column="1" x:Name="TB_Speler1_Legs" Style="{StaticResource TextBlock_p}"/>
+        <TextBlock Grid.Row="3" Grid.Column="2" Text="Legs speler 2" Style="{StaticResource TextBlock_H3}" />
+        <TextBlock Grid.Row="3" Grid.Column="3" x:Name="TB_Speler2_Legs" Style="{StaticResource TextBlock_p}"/>
+
+        <TextBlock Grid.Row="4" Grid.Column="0" Text="180's speler 1" Style="{StaticResource TextBlock_H3}" />
+        <TextBlock Grid.Row="4" Grid.Column="1" x:Name="TB_Speler1_180" Style="{StaticResource TextBlock_p}"/>
+        <TextBlock Grid.Row="4" Grid.Column="2" Text="180's speler 2" Style="{StaticResource TextBlock_H3}" />
+        <TextBlock Grid.Row="4" Grid.Column="3" x:Name="TB_Speler2_180" Style="{StaticResource TextBlock_p}"/>
+
+        <TextBlock Grid.Row="5" Grid.Column="0" Text="Gemiddelde speler 1" Style="{StaticResource TextBlock_H3}" />
+        <TextBlock Grid.Row="5" Grid.Column="1" x:Name="TB_Speler1_Gemiddelde" Style="{StaticResource TextBlock_p}"/>
+        <TextBlock Grid.Row="5" Grid.Column="2" Text="Gemiddelde speler 2" Style="{StaticResource TextBlock_H3}" />
+        <TextBlock Grid.Row="5" Grid.Column="3" x:Name="TB_Speler2_Gemiddelde" Style="{StaticResource TextBlock_p}"/>
+
+    </Grid>
+
+</Page>

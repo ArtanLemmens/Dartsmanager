@@ -45,25 +45,25 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Username" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Username" Style="{StaticResource TextBlock_H3}" />
                 <TextBox Grid.Row="1" Grid.Column="1" x:Name="TB_Username" Style="{StaticResource TextBox_Info}"/>
                 <Button Grid.Row="1" Grid.Column="2" x:Name="BT_Update_Name" Content="Update username" Click="BT_Update_Name_Click" Style="{StaticResource Button_B3}"/>
 
-                <TextBlock Grid.Row="2" Grid.Column="0"  Text="Wachtwoord" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
+                <TextBlock Grid.Row="2" Grid.Column="0"  Text="Wachtwoord" Style="{StaticResource TextBlock_H3}" />
                 <PasswordBox Grid.Row="2" Grid.Column="1" x:Name="TB_Wachtwoord" Style="{StaticResource PasswordBox_P1}"/>
                 <Button Grid.Row="2" Grid.Column="2" x:Name="BT_Update_Wachtwoord" Content="Update wachtwoord" Click="BT_Update_Wachtwoord_Click" Style="{StaticResource Button_B3}"/>
 
-                <TextBlock Grid.Row="3" Grid.Column="0" Text="Speler" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Speler" Style="{StaticResource TextBlock_H3}" />
                 <ComboBox Grid.Row="3" Grid.Column="1" x:Name="CB_Spelers" Style="{StaticResource ComboBox_C1}"
                           DisplayMemberPath="VoornaamNaam" SelectedValuePath="Id"/>
                 <Button Grid.Row="3" Grid.Column="2" x:Name="BT_Update_Player" Content="Update speler" Click="BT_Update_Player_Click" Style="{StaticResource Button_B3}"/>
                 <Button Grid.Row="3" Grid.Column="3" x:Name="BT_Create_Player" Content="Nieuwe speler" Click="BT_Create_Player_Click" Style="{StaticResource Button_B3}"/>
 
-                <TextBlock Grid.Row="4" Grid.Column="0" Text="Speler bevestigd?" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="Speler bevestigd?" Style="{StaticResource TextBlock_H3}" />
                 <CheckBox Grid.Row="4" Grid.Column="1" x:Name="CHB_Speler_Bevestigd" VerticalAlignment="Center" Margin="5" IsEnabled="False"/>
                 <Button Grid.Row="4" Grid.Column="2" x:Name="BT_Update_Speler_Bevestigd" Content="Update bevestiging" Click="BT_Update_Speler_Bevestigd_Click" Style="{StaticResource Button_B3}"/>
                 
-                <TextBlock Grid.Row="5" Grid.Column="0" Text="Is Admin?" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
+                <TextBlock Grid.Row="5" Grid.Column="0" Text="Is Admin?" Style="{StaticResource TextBlock_H3}" />
                 <CheckBox Grid.Row="5" Grid.Column="1" x:Name="CHB_IsAdmin" VerticalAlignment="Center" Margin="5" IsEnabled="False"/>
                 <Button Grid.Row="5" Grid.Column="2" x:Name="BT_IsAdmin_Bevestigd" Content="Update admin" Click="BT_IsAdmin_Bevestigd_Click" Style="{StaticResource Button_B3}"/>
             </Grid>

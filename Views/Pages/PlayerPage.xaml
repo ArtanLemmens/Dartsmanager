@@ -23,42 +23,42 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="120"/>
+            <ColumnDefinition Width="140"/>
             <ColumnDefinition Width="200"/>
             <ColumnDefinition Width="100"/>
             <ColumnDefinition Width="100"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Button Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" x:Name="BT_PlayerOverview"
+        <Button Grid.Row="0" Grid.Column="0"  HorizontalAlignment="Left" x:Name="BT_PlayerOverview"
                 Content="Terug naar overzicht" Click="BT_PlayerOverview_Click" Style="{StaticResource Button_B1}" />
         
         <TextBlock Grid.Row="1" Grid.Column="0" Text="Overzicht speler" Style="{StaticResource TextBlock_H2}" />
         <Button Grid.Row="1" Grid.Column="1" x:Name="BT_Update_Speler" Content="Update speler" Click="BT_Update_Speler_Click" Style="{StaticResource Button_B3}"/>
         
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="Voornaam" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Voornaam" Style="{StaticResource TextBlock_H3}" />
         <TextBox Grid.Row="2" Grid.Column="1" x:Name="TB_Voornaam" Style="{StaticResource TextBox_Info}"/>
 
-        <TextBlock Grid.Row="3" Grid.Column="0" Text="Naam" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="Naam" Style="{StaticResource TextBlock_H3}" />
         <TextBox Grid.Row="3" Grid.Column="1" x:Name="TB_Naam" Style="{StaticResource TextBox_Info}"/>
         
-        <TextBlock Grid.Row="4" Grid.Column="0" Text="Lid sinds" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
+        <TextBlock Grid.Row="4" Grid.Column="0" Text="Lid sinds" Style="{StaticResource TextBlock_H3}" />
         <TextBlock Grid.Row="4" Grid.Column="1" x:Name="TB_LidSinds" Style="{StaticResource TextBlock_p}"/>
 
-        <TextBlock Grid.Row="5" Grid.Column="0" Text="Ranking" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
+        <TextBlock Grid.Row="5" Grid.Column="0" Text="Ranking" Style="{StaticResource TextBlock_H3}" />
         <TextBlock Grid.Row="5" Grid.Column="1" x:Name="TB_Ranking" Style="{StaticResource TextBlock_p}"/>        
 
-        <TextBlock Grid.Row="6" Grid.Column="0" Text="Geboortedatum" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
+        <TextBlock Grid.Row="6" Grid.Column="0" Text="Geboortedatum" Style="{StaticResource TextBlock_H3}" />
         <TextBox Grid.Row="6" Grid.Column="1" x:Name="TB_Geboortedatum" Style="{StaticResource TextBox_Info}"/>
 
-        <TextBlock Grid.Row="7" Grid.Column="0" Text="Mail" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
+        <TextBlock Grid.Row="7" Grid.Column="0" Text="Mail" Style="{StaticResource TextBlock_H3}" />
         <TextBox Grid.Row="7" Grid.Column="1" x:Name="TB_Mail" Style="{StaticResource TextBox_Info}"/>
 
-        <TextBlock Grid.Row="8" Grid.Column="0" Text="Telefoonnummer" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
+        <TextBlock Grid.Row="8" Grid.Column="0" Text="Telefoonnummer" Style="{StaticResource TextBlock_H3}" />
         <TextBox Grid.Row="8" Grid.Column="1" x:Name="TB_Telefoonnummer" Style="{StaticResource TextBox_Info}"/>        
 
-        <TextBlock Grid.Row="9" Grid.Column="0" Text="Adres" Style="{StaticResource TextBlock_H3}" Margin="5,5,5,0"/>
+        <TextBlock Grid.Row="9" Grid.Column="0" Text="Adres" Style="{StaticResource TextBlock_H3}" />
         <ComboBox Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="2" x:Name="CB_Adresses" Style="{StaticResource ComboBox_C1}" DisplayMemberPath="AdresVolledig" SelectedValuePath="Id"/>
-        <Button Grid.Row="9" Grid.Column="3" x:Name="BT_Create_Adress" Content="Creëer" Click="BT_Create_Adress_Click" Style="{StaticResource Button_B3}" Margin="5,5,5,0"/>
+        <Button Grid.Row="9" Grid.Column="3" x:Name="BT_Create_Adress" Content="Creëer" Click="BT_Create_Adress_Click" Style="{StaticResource Button_B3}" />
     </Grid>
 
 </Page>
