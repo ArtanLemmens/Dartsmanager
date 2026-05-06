@@ -19,6 +19,14 @@ namespace Dartsmanager.Services
                 return tornooien;
             }
         }
+        public static List<Tournament> GetAllOpen()
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                var tornooien = db.Tournaments.Include(t => t.Adres).Include(t => t.Status).Where(t => t.Status != null && t.Status.Naam.Contains("Niet gestart")).ToList();
+                return tornooien;
+            }
+        }
         public static List<Tournament> GetAll(Player speler)
         {
             using (var db = new DbDartsmanagerContext())

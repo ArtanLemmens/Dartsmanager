@@ -25,6 +25,7 @@ namespace Dartsmanager
         {
             InitializeComponent();
             ShowAdminButton();
+            Frame_Pagina.Navigate(new HomePage(_actieve_gebruiker, Frame_Pagina));
         }
 
         private void ShowAdminButton()
@@ -66,7 +67,7 @@ namespace Dartsmanager
                 }
             }
             // Terug naar homepage navigeren
-            Frame_Pagina.Navigate(new HomePage(_actieve_gebruiker));
+            Frame_Pagina.Navigate(new HomePage(_actieve_gebruiker, Frame_Pagina));
             BT_Home.Focus();
             ShowAdminButton();
         }
@@ -81,7 +82,7 @@ namespace Dartsmanager
 
         private void BT_Home_Click(object sender, RoutedEventArgs e)
         {
-            Frame_Pagina.Navigate(new HomePage(_actieve_gebruiker));
+            Frame_Pagina.Navigate(new HomePage(_actieve_gebruiker, Frame_Pagina));
         }
 
         private void BT_Profiel_Click(object sender, RoutedEventArgs e)

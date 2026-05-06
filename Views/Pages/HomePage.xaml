@@ -7,16 +7,71 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="HomePage">
+    <Page.Resources>
+        <DataTemplate x:Key="Template_Tornooien">
+            <Grid Margin="0" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80" />
+                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition Width="80" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Style="{StaticResource TextBlock_LB}" Text="{Binding Datum}" Grid.Column="0"/>
+                <TextBlock Style="{StaticResource TextBlock_LB}" Text="{Binding Naam}" Grid.Column="1"/>
+                <TextBlock Style="{StaticResource TextBlock_LB}" Text="{Binding Jaargang}" Grid.Column="2"/>
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.Row="0" Grid.Column="0" Text="Home" Style="{StaticResource TextBlock_H2}" />
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Home" Style="{StaticResource TextBlock_H1}"/>        
+        <!-- Spelers in de kijker -->
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Spelers in de kijker" Style="{StaticResource TextBlock_H2}"/>
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Meeste 180's: " Style="{StaticResource TextBlock_H3}"/>
+        <TextBlock Grid.Row="2" Grid.Column="1" x:Name="TB_Meeste180" Style="{StaticResource TextBlock_p}" FontWeight="Bold"/>
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="Hoogste gemiddelde: " Style="{StaticResource TextBlock_H3}"/>
+        <TextBlock Grid.Row="3" Grid.Column="1" x:Name="TB_HoogsteGemiddelde" Style="{StaticResource TextBlock_p}" FontWeight="Bold"/>
+
+        <!-- Actieve tornooien -->
+        <Separator Grid.Row="5"  Grid.ColumnSpan="3"  Style="{StaticResource Separator_SP1}"/>
+        <TextBlock Grid.Row="6" Grid.Column="0" Text="Open tornooien" Style="{StaticResource TextBlock_H2}"/>
+        <Button Grid.Row="6" Grid.Column="1" x:Name="BT_View_Tournament" Content="Bekijk tornooi" Click="BT_View_Tournament_Click" Style="{StaticResource Button_B3}" Foreground="Orange"/>
+        <!-- HEADER -->
+        <Border Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3"  BorderBrush="Black" BorderThickness="0,0,0,1" Background="#2B2B2B" Margin="5,5,5,0" HorizontalAlignment="Left">
+            <Grid  Margin="5,5,7,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80" />
+                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition Width="80" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Datum" Style="{StaticResource TextBlock_LB_Titel}" Grid.Column="0"/>
+                <TextBlock Text="Naam" Style="{StaticResource TextBlock_LB_Titel}" Grid.Column="1"/>
+                <TextBlock Text="Jaargang" Style="{StaticResource TextBlock_LB_Titel}" Grid.Column="2"/>
+            </Grid>
+        </Border>
+
+
+        <!-- LISTBOX -->
+        <ListBox Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="3" x:Name="LB_Tornooien"
+                 BorderBrush="DarkGray" Style="{StaticResource ListBox_L1}" ItemTemplate="{StaticResource Template_Tornooien}" d:ItemsSource="{d:SampleData ItemCount=2}"/>
 
     </Grid>
 </Page>

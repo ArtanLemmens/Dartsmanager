@@ -283,6 +283,54 @@ namespace Dartsmanager.Services
                 }
             }
         }
+        public static (Player? speler_180, int punten_180, Player? speler_gemiddelde, double punten_gemiddelde) GetHighScores()
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                // lijst maken om de ranking van de speler bij te houden
+                var ranking_lijst = new List<TempRanking>();
+
+                // Al de tornooien ophalen en doorlopen
+                var tornooien = TournamentService.GetAll();
+                foreach (var tornooi in tornooien)
+                {
+                    // elke inschrijving ophalen en doorlopen
+                    var inschrijvingen = TournamentService.GetAllRegistrations(tornooi);
+                    foreach (var inschrijving in inschrijvingen)
+                    {
+                        // Tornooistats ophalen
+                        var resultaat = TournamentService.GetTournamentstatistics(tornooi, inschrijving.Player);
+                        var gevonden_ranking = ranking_lijst.FirstOrDefault(p => p.PlayerId == inschrijving.Player.Id);
+                        if (gevonden_ranking != null)
+                        {
+                            gevonden_ranking.Legs = resultaat.legs;
+                            gevonden_ranking.Gemiddelde = (gevonden_ranking.Gemiddelde + resultaat.gemiddelde) / 2;
+                        }
+                        else
+                        {
+                            // Nieuwe waarde toevoegen aan rankinglijst
+                            ranking_lijst.Add(new TempRanking
+                            {
+                                PlayerId = inschrijving.Player.Id,
+                                Gewonnen_Matchen = resultaat.wedstrijden_gewonnen,
+                                Legs = resultaat.legs,
+                                Aantal_180 = resultaat.aantal_180,
+                                Gemiddelde = resultaat.gemiddelde
+                            });
+                        }
+                        
+                    }
+                }
+
+                // Rankinglijsten sorteren
+                var gesorteerd180 = ranking_lijst.OrderByDescending(r => r.Aantal_180).ToList();
+                var gesorteerdgemiddelde = ranking_lijst.OrderByDescending(r => r.Gemiddelde).ToList();
+                var speler_180 = GetPlayerFromId(gesorteerd180[0].PlayerId);
+                var speler_Gemiddelde = GetPlayerFromId(gesorteerdgemiddelde[0].PlayerId);
+
+                return (speler_180, gesorteerd180[0].Aantal_180, speler_Gemiddelde, gesorteerd180[0].Gemiddelde);
+            }
+        }
         public static void CalculateCompleteRanking()
         {
             using (var db = new DbDartsmanagerContext())
