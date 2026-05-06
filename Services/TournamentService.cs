@@ -777,6 +777,14 @@ namespace Dartsmanager.Services
                 return groep;
             }
         }
+        public static Group? GetGroup(Tournament tornooi, Player speler)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                var groep = db.Groups.FirstOrDefault(g => g.GroupPlayers.Any(gp => gp.Player == speler) && g.Tournament.Id == tornooi.Id);
+                return groep;
+            }
+        }
         public static int GetSetsPerGroupsPlayer(Group groep, Player speler)
         {
             using (var db = new DbDartsmanagerContext())
@@ -931,7 +939,9 @@ namespace Dartsmanager.Services
                             {
                                 tornooi.StatusId = status.Id;
                                 Update(tornooi);
-                            }                            
+                            }
+                            // Ranking herberekenen
+                            PlayerService.CalculateCompleteRanking();
                             return;
                         }
                         // Wedstrijden maken voor de winnaars (indien er meer dan 1 winaar is
@@ -965,6 +975,7 @@ namespace Dartsmanager.Services
             }
         }
 
+        // Statistieken
         public static List<GroupPlayerInfo> GetPlayerRanking(Group groep)
         {
             var spelers = GetAllPlayersFromGroup(groep);
@@ -990,6 +1001,54 @@ namespace Dartsmanager.Services
 
             return spelersinfo;
         }
+        public static (int groepsfase, int wedstrijden_gewonnen, int legs, int aantal_180, double gemiddelde) GetTournamentstatistics(Tournament tornooi, Player speler)
+        {
+            var wedstrijden = GameService.GetAll(tornooi, speler);
+            int groepsfase = 0;
+            int totaal_gewonnen = 0;
+            int legs = 0;
+            int aantal_180 = 0;
+            double gemiddelde = 0;
+            double totaal_gemiddelde = 0;
+            int aantal_gemiddelde = 0;
+            // De groep zoeken waar de speler in zat en zijn resultaat binnen de groep ophalen
+            var groep = GetGroup(tornooi, speler);
+            if (groep == null)
+            {
+                MessageBox.Show("null");
+                return (0,0,0,0,0);
+            }
+            // De groep sorteren op score
+            List < GroupPlayerInfo > spelersinfo = GetPlayerRanking(groep);
+            for (int i = 0; i < spelersinfo.Count; i++)
+            {
+                // De eerste 2 spelers uit elke gesorteerde groep zijn de winnaars
+                if (i < 2)
+                {
+                    groepsfase = 1;
+                }                
+                else if (i < 4)
+                {
+                    groepsfase = 2;
+                }
+            }
 
+            // Al de wedstrijden doorlopen
+            foreach (var wedstrijd in wedstrijden)
+            {
+                // resultaat ophalen en kijken of speler gewonnen had
+                var resultaat = GameService.GetGameResult(wedstrijd);
+                if (resultaat != null && resultaat.Value.winnaar.Id == speler.Id)
+                {
+                    totaal_gewonnen ++;
+                }
+                legs += GameService.GetLegsFromGamescore(wedstrijd, speler);
+                aantal_180 += GameService.Get180sFromGamescore(wedstrijd, speler);
+                totaal_gemiddelde += GameService.GetGemiddeldeFromGamescore(wedstrijd, speler);
+                aantal_gemiddelde++;
+            }
+            gemiddelde = totaal_gemiddelde / aantal_gemiddelde;
+            return (groepsfase, totaal_gewonnen, legs, aantal_180, gemiddelde);
+        }
     }
 }

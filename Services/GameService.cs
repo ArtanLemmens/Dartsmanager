@@ -74,6 +74,18 @@ namespace Dartsmanager.Services
                 return wedstrijden;
             }
         }
+        public static List<Game> GetAll(Tournament tornooi, Player speler)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                var wedstrijden = db.Games
+                    .Include(g => g.Tournament)
+                    .Include(g => g.Player1)
+                    .Include(g => g.Player2)
+                    .Where(g => g.TournamentId == tornooi.Id && (g.Player1Id == speler.Id || g.Player2Id == speler.Id)).ToList();
+                return wedstrijden;
+            }
+        }
         public static List<Game> GetAllfromKOstage(Tournament tornooi)
         {
             using (var db = new DbDartsmanagerContext())
@@ -286,9 +298,9 @@ namespace Dartsmanager.Services
                     {
                         score_speler2.SetsWon = 1;
                     }
-                    else
+                    else if (legs1 > 0 && legs2 > 0 && legs2 ==  legs1)
                     {
-                        MessageBox.Show("Beide spelers meten een verschillende score halen!");
+                        MessageBox.Show("Beide spelers moeten een verschillende score halen!");
                     }
 
                     db.SaveChanges();

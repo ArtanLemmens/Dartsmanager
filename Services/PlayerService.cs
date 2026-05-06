@@ -19,6 +19,8 @@ namespace Dartsmanager.Services
                     return db.Players
                         .Include(p => p.Adres)
                         .Include(p => p.User)
+                        .Where(p => p.IsDummy == 0)
+                        .OrderByDescending(p => p.RankingPoints)
                         .ToList();
                 }
                 else
@@ -27,6 +29,7 @@ namespace Dartsmanager.Services
                     .Include(p => p.Adres)
                     .Include(p => p.User)
                     .Where(p => db.Registrations.Any(r => r.TournamentId == tornooi.Id && r.PlayerId == p.Id))
+                    .OrderByDescending(p => p.RankingPoints)
                     .ToList();
                 }
             }
@@ -122,6 +125,7 @@ namespace Dartsmanager.Services
                         bestaandeSpeler.AdresId = speler.AdresId;
                         bestaandeSpeler.Telefoonnummer = speler.Telefoonnummer;
                         bestaandeSpeler.Ranking = speler.Ranking;
+                        bestaandeSpeler.RankingPoints = speler.RankingPoints;
                         bestaandeSpeler.LidSinds = speler.LidSinds;
                         db.SaveChanges();
                     }
@@ -210,6 +214,93 @@ namespace Dartsmanager.Services
             catch
             {
                 throw new InvalidOperationException("Deze speler kan niet worden verwijderd omdat het nog gekoppeld is aan andere gegevens.");
+            }
+        }
+
+        // Methodes om de punten en ranking te berekenen
+        public static void CalculatePoints()
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                // Al de punten terug op 0 zetten
+                var spelers =  db.Players.ToList();
+                foreach (var speler in spelers)
+                {
+                    speler.RankingPoints = 0;
+                }
+                // Al de tornooien ophalen en doorlopen
+                var tornooien = TournamentService.GetAll();
+                foreach (var tornooi in tornooien)
+                {
+                    // lijst maken om de tijdelijke ranking van het tornooi bij te houden
+                    var ranking_lijst = new List<TempRanking>();
+
+                    // elke inschrijving ophalen en doorlopen
+                    var inschrijvingen = TournamentService.GetAllRegistrations(tornooi);
+                    foreach (var inschrijving in inschrijvingen)
+                    {
+                        // Tornooistats ophalen
+                        var resultaat = TournamentService.GetTournamentstatistics(tornooi, inschrijving.Player);
+                        // Toevoegen aan rankinglijst
+                        ranking_lijst.Add(new TempRanking
+                        {
+                            PlayerId = inschrijving.Player.Id,
+                            Groepsfase = resultaat.groepsfase,
+                            Gewonnen_Matchen = resultaat.wedstrijden_gewonnen,
+                            Legs = resultaat.legs,
+                            Aantal_180 = resultaat.aantal_180,
+                            Gemiddelde = resultaat.gemiddelde
+                        });
+                    }
+
+                    // Tijdelijk rankinglijst sorteren
+                    var gesorteerd = ranking_lijst
+                        .OrderBy(r => r.Groepsfase)
+                        .ThenByDescending(r => r.Gewonnen_Matchen)
+                        .ThenByDescending(r => r.Legs)
+                        .ThenByDescending(r => r.Aantal_180)
+                        .ThenByDescending(r => r.Gemiddelde)
+                        .ToList();
+
+                    // Kijken wat de max registraties waren en omgekeerd punten toekennen
+                    int max = 0;
+                    if (tornooi.MaxInschrijvingen != null)
+                    {
+                        max = (int)tornooi.MaxInschrijvingen;
+                    }
+
+                    for (int i = 0; i < gesorteerd.Count; i++)
+                    {
+                        int punten = Math.Max(0, max - i); // geen waarde lager dan 0 toekennen
+
+                        var speler = spelers.FirstOrDefault(p => p.Id == gesorteerd[i].PlayerId);
+                        if (speler != null && speler.IsDummy == 0) // Geen punten geven aan dummies
+                        {
+                            speler.RankingPoints += punten;
+                            Update(speler);
+                        }
+                    }
+                }
+            }
+        }
+        public static void CalculateCompleteRanking()
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                CalculatePoints();
+                // De ranking terug op 0 zetten
+                var spelers = db.Players.ToList();
+                foreach (var speler in spelers)
+                {
+                    speler.Ranking = 0;
+                }
+                // Spelers sorteren op punten
+                var gesorteerde_spelers = spelers.OrderByDescending(r => r.RankingPoints).ToList();
+                for (int i = 0; i < gesorteerde_spelers.Count; i++)
+                {
+                    gesorteerde_spelers[i].Ranking = i + 1;
+                    Update(gesorteerde_spelers[i]);
+                }
             }
         }
     }

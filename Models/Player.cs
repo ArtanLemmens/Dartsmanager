@@ -1,6 +1,7 @@
 ﻿using Dartsmanager.Services;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Dartsmanager.Models;
 
@@ -21,6 +22,8 @@ public partial class Player
     public int? AdresId { get; set; }
 
     public string? Telefoonnummer { get; set; }
+
+    public int? RankingPoints { get; set; }
 
     public int? Ranking { get; set; }
 
@@ -59,4 +62,5 @@ public partial class Player
             return "";
         }
     }
+
 }
