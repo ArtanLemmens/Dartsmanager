@@ -80,7 +80,6 @@
                     <Button x:Name="BT_Player_Data" Content="Data" Click="BT_Player_Data_Click" Style="{StaticResource Button_B1}" />
                     <Button x:Name="BT_Player_Tornooien" Content="Tornooien" Click="BT_Player_Tornooien_Click" Style="{StaticResource Button_B1}" />
                     <Button x:Name="BT_Player_Wedstrijden" Content="Wedstrijden" Click="BT_Player_Wedstrijden_Click" Style="{StaticResource Button_B1}" />
-                    <Button x:Name="BT_Player_Statistieken" Content="Statistieken" Click="BT_Player_Statistieken_Click" Style="{StaticResource Button_B1}" />
                 </StackPanel>
 
                 <!-- SPELERSPAGE -->

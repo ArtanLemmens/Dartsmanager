@@ -54,10 +54,14 @@ namespace Dartsmanager.Views.Pages
                 StackPanel_Wedstrijden.Children.Clear();
 
                 Grid grid = new Grid();
-
+                
+                if (_actief_tornooi.AantalRondes == null)
+                {
+                    return;
+                }
                 // Aantal rondes ophalen
                 int rondes = 1;
-                if (_actief_tornooi.AantalRondes != null && _actief_tornooi.AantalRondes > 1)
+                if (_actief_tornooi.AantalRondes > 1)
                 {
                     rondes = (int)_actief_tornooi.AantalRondes;
                 }

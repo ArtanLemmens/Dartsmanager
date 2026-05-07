@@ -105,10 +105,6 @@ namespace Dartsmanager
             Frame_Pagina.Navigate(new GameOverview(_actieve_gebruiker, Frame_Pagina));
         }
 
-        private void BT_Statistiek_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
 
         private void BT_Admin_Click(object sender, RoutedEventArgs e)
         {

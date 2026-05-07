@@ -251,12 +251,6 @@ namespace Dartsmanager.Views.Pages
                 Frame_Player.Navigate(new GameOverview(_actieve_gebruiker, Frame_Player, null, _geselecteerde_gebruiker.Player));
             }
         }
-
-        private void BT_Player_Statistieken_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        
+                
     }
 }
