@@ -29,17 +29,9 @@ namespace Dartsmanager.Views.Pages
             InitializeComponent();
             _actieve_gebruiker = actieve_gebruiker;
             _frame = frame;
-            GetUsers();
+            FilterUsers();
         }
 
-        private void GetUsers()
-        {
-            var users = UserService.GetAll();
-            if (users.Count > 0)
-            {
-                LB_Users.ItemsSource = users;
-            }
-        }
         private void FilterUsers()
         {
             if (LB_Users == null)
@@ -50,7 +42,11 @@ namespace Dartsmanager.Views.Pages
             // Bij een lege waarde of "zoek gerbuiker" mogen al de spelers getoond worden
             if (string.IsNullOrWhiteSpace(filter) || filter == "Zoek gebruiker...")
             {
-                var users = UserService.GetAll();
+                var users = UserService.GetAll();                
+                if (CHB_ToonOnbevestigd.IsChecked == true)
+                {
+                    users = UserService.GetAllUnconfirmed();
+                }
                 if (users.Count > 0)
                 {
                     LB_Users.ItemsSource = users;
@@ -59,6 +55,10 @@ namespace Dartsmanager.Views.Pages
             }
             // filteren op de gefilterde waarde
             var gefilterde_gebruikers = UserService.GetUsersFromNameFilter(filter);
+            if (CHB_ToonOnbevestigd.IsChecked == true)
+            {
+                gefilterde_gebruikers = UserService.GetUsersUnconfirmedFromNameFilter(filter);
+            }
             LB_Users.ItemsSource = gefilterde_gebruikers;
             LB_Users.Items.Refresh();
         }
@@ -136,6 +136,16 @@ namespace Dartsmanager.Views.Pages
             {
                 MessageBox.Show("Gelieve eerst een gebruiker te selecteren");
             }
+        }
+
+        private void CHB_ToonOnbevestigd_Checked(object sender, RoutedEventArgs e)
+        {
+            FilterUsers();
+        }
+
+        private void CHB_ToonOnbevestigd_Unchecked(object sender, RoutedEventArgs e)
+        {
+            FilterUsers();
         }
     }
 }

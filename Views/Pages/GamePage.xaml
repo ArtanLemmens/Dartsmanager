@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Dartsmanager.Views.Pages"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="800" d:DesignWidth="800"
       Title="GamePage">
 
     <Grid Margin="5" >
@@ -15,41 +15,72 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="150"/>
-            <ColumnDefinition Width="200"/>
-            <ColumnDefinition Width="150"/>
-            <ColumnDefinition Width="200"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
+        
+        <!--- KNOP terugkeren hoofdmenu-->
         <Button Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" x:Name="BT_GameOverview"
                 Content="Terug naar overzicht" Click="BT_GameOverview_Click" Style="{StaticResource Button_B1}" />
 
-        <TextBlock Grid.Row="1" Grid.Column="0" Text="Overzicht wedstrijd" Style="{StaticResource TextBlock_H2}" />
+        <!--- TITEL 1 -->
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Overzicht wedstrijd" Style="{StaticResource TextBlock_H1}" />
 
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="Speler 1" Style="{StaticResource TextBlock_H3}" />
-        <TextBlock Grid.Row="2" Grid.Column="1" x:Name="TB_Speler1_Naam" Style="{StaticResource TextBlock_p}"/>
-        <TextBlock Grid.Row="2" Grid.Column="2" Text="Speler 2" Style="{StaticResource TextBlock_H3}" />
-        <TextBlock Grid.Row="2" Grid.Column="3" x:Name="TB_Speler2_Naam" Style="{StaticResource TextBlock_p}"/>
+        <!-- SPELER 1 -->
+        <Border  Grid.Row="2" Grid.Column="0" Padding="25" Margin="10" Background="White" CornerRadius="12" BorderThickness="1" BorderBrush="#DDDDDD">
+            <StackPanel HorizontalAlignment="Center">
+                <TextBlock Text="Speler 1" Style="{StaticResource TextBlock_H2}" HorizontalAlignment="Center"/>
+                <TextBlock x:Name="TB_Speler1_Naam" Style="{StaticResource TextBlock_G1}"/>
+                <TextBlock x:Name="TB_Speler1_Legs" Style="{StaticResource TextBlock_G2}"/>
+            </StackPanel>
+        </Border>
+
+        <!-- VS -->
+        <TextBlock Grid.Row="2" Grid.Column="1" Text="VS" FontSize="40" FontWeight="Bold" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+        <!-- SPELER 2 -->
+        <Border  Grid.Row="2" Grid.Column="2" Padding="25" Margin="10" Background="White" CornerRadius="12" BorderThickness="1" BorderBrush="#DDDDDD">
+            <StackPanel HorizontalAlignment="Center">
+                <TextBlock Text="Speler 2" Style="{StaticResource TextBlock_H2}" HorizontalAlignment="Center"/>
+                <TextBlock x:Name="TB_Speler2_Naam" Style="{StaticResource TextBlock_G1}"/>
+                <TextBlock x:Name="TB_Speler2_Legs" Style="{StaticResource TextBlock_G2}"/>
+            </StackPanel>
+        </Border>
         
-        <TextBlock Grid.Row="3" Grid.Column="0" Text="Legs speler 1" Style="{StaticResource TextBlock_H3}" />
-        <TextBlock Grid.Row="3" Grid.Column="1" x:Name="TB_Speler1_Legs" Style="{StaticResource TextBlock_p}"/>
-        <TextBlock Grid.Row="3" Grid.Column="2" Text="Legs speler 2" Style="{StaticResource TextBlock_H3}" />
-        <TextBlock Grid.Row="3" Grid.Column="3" x:Name="TB_Speler2_Legs" Style="{StaticResource TextBlock_p}"/>
+        <!-- STATISTIEKEN -->
+        <!--- TITEL 2 -->
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="Wedstrijd Statistieken" Style="{StaticResource TextBlock_H1}" />
 
-        <TextBlock Grid.Row="4" Grid.Column="0" Text="180's speler 1" Style="{StaticResource TextBlock_H3}" />
-        <TextBlock Grid.Row="4" Grid.Column="1" x:Name="TB_Speler1_180" Style="{StaticResource TextBlock_p}"/>
-        <TextBlock Grid.Row="4" Grid.Column="2" Text="180's speler 2" Style="{StaticResource TextBlock_H3}" />
-        <TextBlock Grid.Row="4" Grid.Column="3" x:Name="TB_Speler2_180" Style="{StaticResource TextBlock_p}"/>
+        <!-- SPELER 1 -->
+        <Border  Grid.Row="4" Grid.Column="0" Padding="25" Margin="10" Background="White" CornerRadius="12" BorderThickness="1" BorderBrush="#DDDDDD">
+            <StackPanel HorizontalAlignment="Center">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="180's: " Style="{StaticResource TextBlock_G1}" />
+                    <TextBlock x:Name="TB_Speler1_180" Style="{StaticResource TextBlock_G3}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Gemiddelde: " Style="{StaticResource TextBlock_G1}" />
+                    <TextBlock x:Name="TB_Speler1_Gemiddelde" Style="{StaticResource TextBlock_G3}"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
 
-        <TextBlock Grid.Row="5" Grid.Column="0" Text="Gemiddelde speler 1" Style="{StaticResource TextBlock_H3}" />
-        <TextBlock Grid.Row="5" Grid.Column="1" x:Name="TB_Speler1_Gemiddelde" Style="{StaticResource TextBlock_p}"/>
-        <TextBlock Grid.Row="5" Grid.Column="2" Text="Gemiddelde speler 2" Style="{StaticResource TextBlock_H3}" />
-        <TextBlock Grid.Row="5" Grid.Column="3" x:Name="TB_Speler2_Gemiddelde" Style="{StaticResource TextBlock_p}"/>
-
+        <!-- SPELER 2 -->
+        <Border  Grid.Row="4" Grid.Column="2" Padding="25" Margin="10" Background="White" CornerRadius="12" BorderThickness="1" BorderBrush="#DDDDDD">
+            <StackPanel HorizontalAlignment="Center">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="180's: " Style="{StaticResource TextBlock_G1}" />
+                    <TextBlock x:Name="TB_Speler2_180" Style="{StaticResource TextBlock_G3}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Gemiddelde: " Style="{StaticResource TextBlock_G1}" />
+                    <TextBlock x:Name="TB_Speler2_Gemiddelde" Style="{StaticResource TextBlock_G3}"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
     </Grid>
-
 </Page>

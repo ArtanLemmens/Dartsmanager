@@ -13,10 +13,12 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="300"/>
                     <ColumnDefinition Width="80" />
+                    <ColumnDefinition Width="120" />
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Style="{StaticResource TextBlock_LB}" Text="{Binding Username}" Grid.Column="0"/>
                 <TextBlock Style="{StaticResource TextBlock_LB}" Text="{Binding IsAdmin}" Grid.Column="1"/>
+                <TextBlock Style="{StaticResource TextBlock_LB}" Text="{Binding PlayerIdBevestigd}" Grid.Column="2"/>
             </Grid>
         </DataTemplate>
     </Page.Resources>
@@ -25,11 +27,12 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>            
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
@@ -37,32 +40,38 @@
         <!-- TITEL -->
         <TextBlock Grid.Row="0" Grid.Column="0" Text="Gebruikers" Style="{StaticResource TextBlock_H2}" />
 
+        <!-- FILTER GEBRUIKERS TE BEVESTIGEN-->
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Toon onbevestigde spelers:" Style="{StaticResource TextBlock_H3}" />
+        <CheckBox Grid.Row="1" Grid.Column="1" x:Name="CHB_ToonOnbevestigd" VerticalAlignment="Center" Margin="5" Checked="CHB_ToonOnbevestigd_Checked" Unchecked="CHB_ToonOnbevestigd_Unchecked"/>
+
         <!-- ZOEKBOX -->
-        <Border Grid.Row="1" Grid.Column="0" CornerRadius="10" BorderBrush="Black" BorderThickness="1" Background="#2B2B2B" Margin="5" MinWidth="200" >
+        <Border Grid.Row="2" Grid.Column="0" CornerRadius="10" BorderBrush="Black" BorderThickness="1" Background="#2B2B2B" Margin="5" MinWidth="200" >
             <TextBox x:Name="TB_Gebruiker" Style="{StaticResource TextBox_Search}" Text="Zoek gebruiker..." 
                      GotFocus="TB_Gebruiker_GotFocus" LostFocus="TB_Gebruiker_LostFocus" TextChanged="TB_Gebruiker_TextChanged"/>
         </Border>
-        <Button Grid.Row="1" Grid.Column="1" x:Name="BT_Create_User" Content="Nieuwe gebruiker" Click="BT_Create_User_Click" Style="{StaticResource Button_B3}"/>
-        <Button Grid.Row="1" Grid.Column="2" x:Name="BT_View_User" Content="Bekijk gebruiker" Click="BT_View_User_Click" Style="{StaticResource Button_B3}" Foreground="Orange"/>
-        <Button Grid.Row="1" Grid.Column="3" x:Name="BT_Remove_User" Content="Verwijder gebruiker" Click="BT_Remove_User_Click" Style="{StaticResource Button_B3}" 
+        <Button Grid.Row="2" Grid.Column="1" x:Name="BT_Create_User" Content="Nieuwe gebruiker" Click="BT_Create_User_Click" Style="{StaticResource Button_B3}"/>
+        <Button Grid.Row="2" Grid.Column="2" x:Name="BT_View_User" Content="Bekijk gebruiker" Click="BT_View_User_Click" Style="{StaticResource Button_B3}" Foreground="Orange"/>
+        <Button Grid.Row="2" Grid.Column="3" x:Name="BT_Remove_User" Content="Verwijder gebruiker" Click="BT_Remove_User_Click" Style="{StaticResource Button_B3}" 
                 Foreground="Red" HorizontalAlignment="Left"/>
 
         <!-- HEADER -->
-        <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4"  BorderBrush="Black" BorderThickness="0,0,0,1" Background="#2B2B2B" Margin="5,5,5,0" HorizontalAlignment="Left">
+        <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4"  BorderBrush="Black" BorderThickness="0,0,0,1" Background="#2B2B2B" Margin="5,5,5,0" HorizontalAlignment="Left">
             <Grid  Margin="5,5,7,5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="300"/>
                     <ColumnDefinition Width="80" />
+                    <ColumnDefinition Width="120" />
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Text="Username" Style="{StaticResource TextBlock_LB_Titel}" Grid.Column="0"/>
                 <TextBlock Text="Is admin?" Style="{StaticResource TextBlock_LB_Titel}" Grid.Column="1"/>
+                <TextBlock Text="Speler bevestigd?" Style="{StaticResource TextBlock_LB_Titel}" Grid.Column="2"/>
             </Grid>
         </Border>
 
 
         <!-- LISTBOX -->
-        <ListBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" x:Name="LB_Users"  
+        <ListBox Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" x:Name="LB_Users"  
                  BorderBrush="DarkGray" Style="{StaticResource ListBox_L1}" ItemTemplate="{StaticResource Template_Gebruikers}" d:ItemsSource="{d:SampleData ItemCount=2}"/>
 
 

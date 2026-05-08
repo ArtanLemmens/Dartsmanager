@@ -18,6 +18,14 @@ namespace Dartsmanager.Services
                 return gebruikers;
             }
         }
+        public static List<User> GetAllUnconfirmed()
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                var gebruikers = db.Users.Include(u => u.Player).Where(u => u.PlayerIdBevestigd == false).ToList();
+                return gebruikers;
+            }
+        }
         public static User? GetUserFromId(int id)
         {
             using (var db = new DbDartsmanagerContext())
@@ -39,6 +47,13 @@ namespace Dartsmanager.Services
             using (var db = new DbDartsmanagerContext())
             {
                 return db.Users.Include(u => u.Player).Where(p => p.Username.Contains(filter)).ToList();
+            }
+        }
+        public static List<User> GetUsersUnconfirmedFromNameFilter(string filter)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                return db.Users.Where(u => u.PlayerIdBevestigd == false).Include(u => u.Player).Where(p =>  p.Username.Contains(filter)).ToList();
             }
         }
         public static bool CheckExistingName(string naam)
