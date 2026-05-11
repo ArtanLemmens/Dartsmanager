@@ -3,6 +3,7 @@ using Dartsmanager.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.Windows;
 
@@ -16,6 +17,18 @@ namespace Dartsmanager.Services
             using (var db = new DbDartsmanagerContext())
             {
                 var tornooien = db.Tournaments.Include(t => t.Adres).Include(t => t.Status).ToList();
+                return tornooien;
+            }
+        }
+        public static List<Tournament> GetAllSince(DateTime moment)
+        {
+            using (var db = new DbDartsmanagerContext())
+            {
+                var tornooien = db.Tournaments.Include(t => t.Adres).Include(t => t.Status).ToList();
+
+                // de datum string proberen om te zetten naar een datetime en vergelijken met het opgegeven moment
+                tornooien = tornooien.Where(t => DateTime.TryParseExact(t.Datum, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime datum) && datum >= moment).ToList();
+
                 return tornooien;
             }
         }
@@ -502,6 +515,76 @@ namespace Dartsmanager.Services
             }
             
         }
+        public static void NextRound(Tournament tornooi)
+        {
+            try
+            {
+                using (var db = new DbDartsmanagerContext())
+                {
+                    if (tornooi.ActieveRonde != null && tornooi.ActieveRonde > 1)
+                    {
+                        // Kijken of elke wedstrijd een winnaar heeft
+                        var wedstrijden = GameService.GetAll(tornooi, (int)tornooi.ActieveRonde);
+                        List<Player> winnaars = new List<Player>();
+                        List<Player> verliezers = new List<Player>();
+                        foreach (var wedstrijd in wedstrijden)
+                        {
+                            var resultaat = GameService.GetGameResult(wedstrijd);
+                            if (resultaat != null)
+                            {
+                                winnaars.Add(resultaat.Value.winnaar);
+                                verliezers.Add(resultaat.Value.verliezer);
+                            }
+                            else // Methode afbreken bij een gelijke stand
+                            {
+                                MessageBox.Show("Nog niet al de wedstrijden zijn afgerond. Zorg dat elke wedstrijd een winnaar heeft.");
+                                return;
+                            }
+                        }
+                        // Kijken of dit de laatse ronde was
+                        if (tornooi.ActieveRonde == tornooi.AantalRondes)
+                        {
+                            MessageBox.Show("Het tornooi werd afgesloten.");
+                            var status = GetStatusByName("Afgelopen");
+                            if (status != null)
+                            {
+                                tornooi.StatusId = status.Id;
+                                Update(tornooi);
+                            }
+                            // Ranking herberekenen
+                            PlayerService.CalculateCompleteRanking();
+                            return;
+                        }
+                        // Wedstrijden maken voor de winnaars (indien er meer dan 1 winaar is
+                        if (winnaars.Count > 1)
+                        {
+                            for (int i = 0; i < winnaars.Count; i += 2)
+                            {
+
+
+                                var wedstrijd = new Game
+                                {
+                                    TournamentId = tornooi.Id,
+                                    Player1Id = winnaars[i].Id,
+                                    Player2Id = winnaars[i + 1].Id,
+                                    Ronde = tornooi.ActieveRonde + 1
+                                };
+                                GameService.Add(wedstrijd);
+                            }
+                        }
+
+                        db.SaveChanges();
+                        // Ronde met 1 verhogen
+                        tornooi.ActieveRonde++;
+                        Update(tornooi);
+                    }
+                }
+            }
+            catch
+            {
+                throw new InvalidOperationException("Kon de volgende ronde niet aanmaken. Controleer of de naam uniek is of de databaseverbinding juist is.");
+            }
+        }
 
         // Status
         public static List<Status> GetAllStatus()
@@ -912,76 +995,7 @@ namespace Dartsmanager.Services
                 throw new InvalidOperationException("Kon de groepsfase niet eindigen. Controleer of de naam uniek is of de databaseverbinding juist is.");
             }
         }
-        public static void NextRound(Tournament tornooi)
-        {
-            try
-            {
-                using (var db = new DbDartsmanagerContext())
-                {
-                    if (tornooi.ActieveRonde!= null && tornooi.ActieveRonde > 1)
-                    {
-                        // Kijken of elke wedstrijd een winnaar heeft
-                        var wedstrijden = GameService.GetAll(tornooi, (int)tornooi.ActieveRonde);
-                        List<Player> winnaars = new List<Player>();
-                        List<Player> verliezers = new List<Player>();
-                        foreach (var wedstrijd in wedstrijden)
-                        {
-                            var resultaat = GameService.GetGameResult(wedstrijd);
-                            if (resultaat != null)
-                            {
-                                winnaars.Add(resultaat.Value.winnaar);
-                                verliezers.Add(resultaat.Value.verliezer);
-                            }
-                            else // Methode afbreken bij een gelijke stand
-                            {
-                                MessageBox.Show("Nog niet al de wedstrijden zijn afgerond. Zorg dat elke wedstrijd een winnaar heeft.");
-                                return;
-                            }
-                        }
-                        // Kijken of dit de laatse ronde was
-                        if (tornooi.ActieveRonde == tornooi.AantalRondes)
-                        {
-                            MessageBox.Show("Het tornooi werd afgesloten.");
-                            var status = GetStatusByName("Afgelopen");
-                            if (status != null)
-                            {
-                                tornooi.StatusId = status.Id;
-                                Update(tornooi);
-                            }
-                            // Ranking herberekenen
-                            PlayerService.CalculateCompleteRanking();
-                            return;
-                        }
-                        // Wedstrijden maken voor de winnaars (indien er meer dan 1 winaar is
-                        if (winnaars.Count > 1)
-                        {
-                            for (int i = 0; i < winnaars.Count; i += 2)
-                            {
-                                
-
-                                var wedstrijd = new Game
-                                {
-                                    TournamentId = tornooi.Id,
-                                    Player1Id = winnaars[i].Id,
-                                    Player2Id = winnaars[i + 1].Id,
-                                    Ronde = tornooi.ActieveRonde + 1
-                                };
-                                GameService.Add(wedstrijd);
-                            }
-                        }
-
-                        db.SaveChanges();
-                        // Ronde met 1 verhogen
-                        tornooi.ActieveRonde++;
-                        Update(tornooi);
-                    }
-                }
-            }
-            catch
-            {
-                throw new InvalidOperationException("Kon de volgende ronde niet aanmaken. Controleer of de naam uniek is of de databaseverbinding juist is.");
-            }
-        }
+        
 
         // Statistieken
         public static List<GroupPlayerInfo> GetPlayerRanking(Group groep)

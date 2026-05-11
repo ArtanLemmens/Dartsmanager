@@ -228,8 +228,10 @@ namespace Dartsmanager.Services
                 {
                     speler.RankingPoints = 0;
                 }
-                // Al de tornooien ophalen en doorlopen
-                var tornooien = TournamentService.GetAll();
+                // Al de tornooien ophalen die max 1 jaar oud zijn en doorlopen
+                DateTime een_jaar_geleden = DateTime.Now.AddYears(-1);
+
+                var tornooien = TournamentService.GetAllSince(een_jaar_geleden);
                 foreach (var tornooi in tornooien)
                 {
                     // lijst maken om de tijdelijke ranking van het tornooi bij te houden
@@ -346,7 +348,14 @@ namespace Dartsmanager.Services
                 var gesorteerde_spelers = spelers.OrderByDescending(r => r.RankingPoints).ToList();
                 for (int i = 0; i < gesorteerde_spelers.Count; i++)
                 {
-                    gesorteerde_spelers[i].Ranking = i + 1;
+                    if (gesorteerde_spelers[i].RankingPoints == null)
+                    {
+                        gesorteerde_spelers[i].Ranking = null;
+                    }
+                    else
+                    {
+                        gesorteerde_spelers[i].Ranking = i + 1;
+                    }
                     Update(gesorteerde_spelers[i]);
                 }
             }

@@ -1,4 +1,5 @@
 ﻿using Dartsmanager.Models;
+using Dartsmanager.Services;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -51,5 +52,13 @@ namespace Dartsmanager.Views.Pages
         {
             Frame_Admin.Navigate(new CountryOverview(_actieve_gebruiker, Frame_Admin));
         }
+                
+        private void BT_Ranking_Click(object sender, RoutedEventArgs e)
+        {
+            PlayerService.CalculateCompleteRanking();
+        }
     }
+
+
+
 }

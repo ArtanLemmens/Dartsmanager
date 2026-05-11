@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Dartsmanager.Views.Pages"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="450" d:DesignWidth="1000"
       Title="AdminPage">
     <Grid >
         <Grid.RowDefinitions>
@@ -20,6 +20,7 @@
             <Button x:Name="BT_Countries" Content="Landen" Click="BT_Countries_Click" Style="{StaticResource Button_B1}" />
             <Button x:Name="BT_Players" Content="Spelers" Click="BT_Players_Click" Style="{StaticResource Button_B1}" />
             <Button x:Name="BT_Tournaments" Content="Tornooien" Click="BT_Tournaments_Click" Style="{StaticResource Button_B1}" />
+            <Button x:Name="BT_Ranking" Content="Bereken ranking" Click="BT_Ranking_Click" Style="{StaticResource Button_B1}" />
         </StackPanel>
 
         <!-- ADMINPAGE -->
