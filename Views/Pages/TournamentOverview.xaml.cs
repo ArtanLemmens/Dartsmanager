@@ -145,6 +145,10 @@ namespace Dartsmanager.Views.Pages
                         }
                     }
                 }
+                else
+                {
+                    MessageBox.Show("U heeft geen rechten om de speler te kunnen verwijderen");
+                }
             }
             else
             {

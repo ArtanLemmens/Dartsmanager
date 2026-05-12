@@ -544,6 +544,23 @@ namespace Dartsmanager.Services
                         // Kijken of dit de laatse ronde was
                         if (tornooi.ActieveRonde == tornooi.AantalRondes)
                         {
+                            // Winnaars A-reeks en B-reeks ophalen
+                            var finales = GameService.GetAll(tornooi, (int)tornooi.ActieveRonde);
+                            if (finales != null && finales.Count == 2)
+                            {
+                                // A-reeks
+                                var resultaat = GameService.GetGameResult(finales[0]);
+                                if (resultaat != null)
+                                {
+                                    MessageBox.Show($"De winnaar van de A-finale is {resultaat.Value.winnaar.VoornaamNaam}.\nDe runner-up is {resultaat.Value.verliezer.VoornaamNaam}");
+                                }
+                                // B-reeks
+                                resultaat = GameService.GetGameResult(finales[1]);
+                                if (resultaat != null)
+                                {
+                                    MessageBox.Show($"De winnaar van de B-finale is {resultaat.Value.winnaar.VoornaamNaam}.\nDe runner-up is {resultaat.Value.verliezer.VoornaamNaam}");
+                                }
+                            }
                             MessageBox.Show("Het tornooi werd afgesloten.");
                             var status = GetStatusByName("Afgelopen");
                             if (status != null)
@@ -1037,7 +1054,6 @@ namespace Dartsmanager.Services
             var groep = GetGroup(tornooi, speler);
             if (groep == null)
             {
-                MessageBox.Show("null");
                 return (0,0,0,0,0);
             }
             // De groep sorteren op score

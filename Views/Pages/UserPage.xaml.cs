@@ -72,8 +72,9 @@ namespace Dartsmanager.Views.Pages
 
         private void LoadPlayerData()
         {
-            // enkel speler data tonen als de actieve speler ook is bevestigd door de admin!
-            if (_geselecteerde_gebruiker != null && _geselecteerde_gebruiker.PlayerId != null && _geselecteerde_gebruiker.PlayerIdBevestigd == true)
+            // enkel speler data tonen als de actieve speler ook is bevestigd door de admin of de gebruiker zelf een admin is natuurlijk
+            if ((_geselecteerde_gebruiker != null && _geselecteerde_gebruiker.PlayerId != null && _geselecteerde_gebruiker.PlayerIdBevestigd == true) 
+                || (_actieve_gebruiker != null && _actieve_gebruiker.IsAdmin == true))
             {
                 Grid_PlayerInfo.Visibility = Visibility.Visible;
             }

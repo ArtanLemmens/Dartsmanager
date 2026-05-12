@@ -188,7 +188,18 @@ namespace Dartsmanager.Services
                     var bestaandeSpeler = db.Players.FirstOrDefault(p => p.Id == speler.Id);
                     if (bestaandeSpeler != null)
                     {
-                        
+                        // kijken of hij meedoet aan tornooien
+                        var tornooien = TournamentService.GetAll(bestaandeSpeler);
+                        foreach (var tornooi in tornooien)
+                        {
+                            if (tornooi.Status != null && tornooi.Status.Naam != "Niet gestart") 
+                            {
+                                MessageBox.Show("Deze speler zit al in actieve of afgesloten tornooien en kan niet langer verwijderd worden!");
+                                return;
+                            }
+                        }
+
+                        // kijken of de speler aan een gebruiker gekoppeld werd
                         var bestaandeUser = db.Users.FirstOrDefault(u => u.PlayerId == speler.Id);
                         if (bestaandeUser  != null)
                         {

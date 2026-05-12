@@ -23,7 +23,7 @@
 
         <!-- TITEL-->
         <StackPanel Grid.Row="0" Grid.Column="1"   >
-            <TextBlock x:Name="TB_Programmanaam" Text="Manager" Style="{StaticResource TextBlock_H1}" />
+            <TextBlock x:Name="TB_Programmanaam" Text="Dartsmanager" Style="{StaticResource TextBlock_H1}" />
         </StackPanel>
 
         <!-- LOGIN-->
