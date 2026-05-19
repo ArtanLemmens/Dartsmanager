@@ -41,7 +41,7 @@ namespace Dartsmanager.Views.Pages
             }
             if (resultaat.speler_gemiddelde != null)
             {
-                TB_HoogsteGemiddelde.Text = $"{resultaat.speler_gemiddelde.VoornaamNaam}: {resultaat.punten_gemiddelde}";
+                TB_HoogsteGemiddelde.Text = $"{resultaat.speler_gemiddelde.VoornaamNaam}: {Math.Round(resultaat.punten_gemiddelde,1)}";
             }
         }
 

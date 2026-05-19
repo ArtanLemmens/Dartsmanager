@@ -338,6 +338,12 @@ namespace Dartsmanager.Services
                 // Rankinglijsten sorteren
                 var gesorteerd180 = ranking_lijst.OrderByDescending(r => r.Aantal_180).ToList();
                 var gesorteerdgemiddelde = ranking_lijst.OrderByDescending(r => r.Gemiddelde).ToList();
+                // Lege resultaten opvangen
+                if (gesorteerd180.Count == 0 || gesorteerdgemiddelde.Count == 0)
+                {
+                    return (null, 0, null, 0);
+                }
+
                 var speler_180 = GetPlayerFromId(gesorteerd180[0].PlayerId);
                 var speler_Gemiddelde = GetPlayerFromId(gesorteerdgemiddelde[0].PlayerId);
 
